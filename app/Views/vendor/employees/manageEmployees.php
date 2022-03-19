@@ -39,6 +39,7 @@
                                         <th>Mobile</th>
                                         <th>Role Name</th>
                                         <th>Last Login</th>
+                                        <th>Last Login IP</th>
                                         <th>Created Date</th>
                                         <th>Status</th>
 
@@ -57,21 +58,24 @@
                                     <tr>
                                         <td><?= $i; ?></td>
                                         <td><?= $singleData['name'] ?></td>
-                                        <td><?= $singleData['value'] ?></td>
-                                        <td><?= $singleData['description'] ?></td>
+                                        <td><?= $singleData['username'] ?></td>
+                                        <td><?= $singleData['email'] ?></td>
+                                        <td><?= $singleData['mobile'] ?></td>
+                                        <td><?= getDirectValue('roles','role_name','id', $singleData['role_id']); ?></td>
+                                        <td><?= $singleData['last_login'] ?></td>
+                                        <td><?= $singleData['last_login_ip'] ?></td>
                                         <td><?= $singleData['created_date'] ?></td>
                                         <td><?= $singleData['status'] == 1 ? '<span class="badge badge-soft-success font-size-13">Active</span>' : '<span class="badge badge-soft-danger font-size-13">Deactive</span>' ?></td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-primary">
+                                            <a href="<?= base_url('/vendor/'.$username.'/editEmployee/'.$singleData['id']) ?>" class="btn btn-sm btn-primary">
                                                 <i class="ri-pencil-fill"></i>
-                                            </button>
+                                            </a>
                                         </td>
                                         <td>
                                             <input type="checkbox" id="switch1" switch="bool" <?= $singleData['status'] == 1 ? 'checked' : '' ?> />
                                             <label for="switch1" data-on-label="Yes" data-off-label="No"></label>
                                         </td>
                                     </tr>
-
                                     <?php $i++; } } ?>
                                 </tbody>
                             </table>

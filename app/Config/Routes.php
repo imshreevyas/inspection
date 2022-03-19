@@ -71,18 +71,22 @@ $routes->group("vendor/(:any)", function ($routes) {
     $routes->get('login', 'VendorController::login');
     $routes->get('dashboard', 'VendorController::dashboard');
 
-    // Role UI routes starts
+    // Roles Section starts
     $routes->get('addRole', 'VendorController::addRole');
-    $routes->get('editRole', 'VendorController::editRole');
     $routes->get('editRole/(:any)', 'VendorController::editRole/$2');
     $routes->get('manageRoles', 'VendorController::allRoles');
-    // Role UI routes end
+    // Roles Section Ends
     
+    // Employees Section starts
     $routes->get('addEmployee', 'VendorController::addEmployees');
+    $routes->get('editEmployee/(:any)', 'VendorController::editEmployees/$2');
+    $routes->get('allEmployees', 'VendorController::allEmployees');
+    // Employee Section Ends
+
+
     $routes->get('addClient', 'VendorController::addVendor');
     $routes->get('addProduct', 'VendorController::addProduct');
     
-    $routes->get('allEmployees', 'VendorController::allEmployees');
     $routes->get('allVendor', 'VendorController::allVendor');
     $routes->get('allGeneralSettings', 'VendorController::allGeneralSettings');
     $routes->get('logout', 'VendorController::SignOut');

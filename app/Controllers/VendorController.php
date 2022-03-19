@@ -91,23 +91,35 @@ class VendorController extends BaseController
     public function addEmployees(){
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Employees';
+        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
         return $this->loadViews('employees/addEmployee',$data);
+    }
+
+    public function editEmployees($id){
+        $data['pageHas'] = 'tableView';
+        $data['pageName'] = 'All Employee';
+        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+        $data['singleEmployees'] = $this->vendor_model->singleEmployee($id, $this->vendorId);
+        return $this->loadViews('employees/editEmployee',$data);
     }
 
     public function allEmployees(){
         $data['pageHas'] = 'tableView';
-        $data['pageName'] = 'All Sidebar';
-        $data['allEmployees'] = $this->vendor_model->employeeList($id);
+        $data['pageName'] = 'All Employee';
+        $data['allEmployees'] = $this->vendor_model->employeeList($this->vendorId);
         return $this->loadViews('employees/manageEmployees',$data);
     }
     // Employee Section Ends
 
 
+
+    // Product Sections Starts
     public function addProduct(){
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Product';
         return $this->loadViews('Products/addProduct',$data);
     }
+    // Product Section Ends
 
     public function addClient(){
         $data['pageHas'] = 'form';
@@ -260,9 +272,40 @@ class VendorController extends BaseController
         }
     }
 
-    // validate general settings values and insert
+    // validate Employee values and insert
     public function dataInsertEmployees(){
 
+        if ($this->request->getMethod() === 'post') {
+            $validation =  \Config\Services::validation();
+            $data['name'] = $this->request->getPost('name');
+            $data['value'] = $this->request->getPost('value');
+            $data['description'] = $this->request->getPost('description');
+
+            $rules = [
+                'name' => ['label' => 'name', 'rules' => 'required'],
+                'value' => ['label' => 'value', 'rules' => 'required'],
+                'description' => ['label' => 'description', 'rules' => 'required']
+            ];
+
+            if ($this->validate($rules) == false) {
+                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+            }else{
+
+                $data['created_date'] = date('Y-m-d H:i:s');
+                $data['status'] = 1;
+
+                if($this->addData('vendor_emp',$data)){
+                    return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
+                } else {
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
+                }
+            }
+        }else{
+            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
+        }
+    }
+
+    public function dataUpdateEmployee(){
         if ($this->request->getMethod() === 'post') {
             $validation =  \Config\Services::validation();
             $data['name'] = $this->request->getPost('name');
@@ -510,13 +553,6 @@ class VendorController extends BaseController
         return $sidebarJson['perms'];
     }
 
-    // logout 
-    public function SignOut()
-    {
-        $this->session->destroy();
-        return redirect()->to(base_url('/vendor/'.$this->vendorUsername));
-    }
-
     public function createSidebarFromRole(){
         $newsidebar = []; // sidebar as per user role
         if(session('is_logged_in')){
@@ -525,8 +561,6 @@ class VendorController extends BaseController
             foreach($sidebars as $singleSidebar){
                 if(isset($user_perms[$singleSidebar['sidebar_url']])){
                     $newsidebar[$singleSidebar['parent_name']][] = $singleSidebar;
-                }else{
-                    echo 'false';
                 }
             }
             
@@ -541,5 +575,13 @@ class VendorController extends BaseController
     {
         return password_hash($pass, PASSWORD_DEFAULT);
     }
+
+    // logout 
+    public function SignOut()
+    {
+        $this->session->destroy();
+        return redirect()->to(base_url('/vendor/'.$this->vendorUsername));
+    }
+
     // All functions Ends
 }

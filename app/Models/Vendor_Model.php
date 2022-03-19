@@ -199,9 +199,9 @@ class Vendor_Model extends Model
         return $this->db->table('vendor_emp')->where('vendor_id',$id)->orderBy('id','DESC')->get()->getResultArray();
     }
     
-    public function singleVendor($id)
+    public function singleEmployee($id,$vendor_id)
     {
-        return $this->db->table('vendor')->where('id',$id)->get()->getRowArray();
+        return $this->db->table('vendor_emp')->where(['id' => $id, 'vendor_id' => $vendor_id])->get()->getRowArray();
     }
 
 

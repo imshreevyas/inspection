@@ -1,26 +1,26 @@
 
-$("#addrole").on("click", async function() {
+$("#addemployee").on("click", async function() {
 
-    $('#addrole').text('Please Wait...');
-    var cname          = validateInput('#companyName', 'Company name', "#addvendor", 'Add Vendor');
-    var cusername            = validateInput('#username', 'Username', "#addvendor", 'Add Vendor');
-    var cemail      = validateInput('#companyEmail','Company Email', "#addvendor", 'Add Vendor');
-    var cnumber            = validateInput('#companyNumber','Company number', "#addvendor", 'Add Vendor');
-    var pack_id            = validateInput('#package_id','Package', "#addvendor", 'Add Vendor');
-    var pass            = validateInput('#password','Password', "#addvendor", 'Add Vendor');
-    var cpass            = validateInput('#confirmPass','Confirm Password', "#addvendor", 'Add Vendor');
+    $('#addemployee').text('Please Wait...');
 
-    var url = `${base_url}/mainAdmin/dataInsertVendor`;
+    var cname      = validateInput('#companyName', 'Company name', "#addvendor", 'Add Vendor');
+    var cusername  = validateInput('#username', 'Username', "#addvendor", 'Add Vendor');
+    var cemail     = validateInput('#companyEmail','Company Email', "#addvendor", 'Add Vendor');
+    var cnumber    = validateInput('#companyNumber','Company number', "#addvendor", 'Add Vendor');
+    var pack_id    = validateInput('#package_id','Package', "#addvendor", 'Add Vendor');
+    var pass       = validateInput('#password','Password', "#addvendor", 'Add Vendor');
+    var cpass      = validateInput('#confirmPass','Confirm Password', "#addvendor", 'Add Vendor');
+
+    var url = `${base_url}/mainAdmin/dataInsertEmployee`;
 
     if(pass != cpass){
         toastr.error('Password and Confirm Password Incorrect') //shows toaster of error 
-        $('#addvendor').text('Add Vendor');
+        $('#addemployee').text('Add Vendor');
         return false;
     }
 
     try {
         const params = new URLSearchParams();
-
         params.append('cname', cname);
         params.append('cusername', cusername);
         params.append('cemail', cemail);
@@ -41,7 +41,7 @@ $("#addrole").on("click", async function() {
                     toastr.success(message[key]);
                 });
                 
-                $('#addvendor').text('Add Vendor');
+                $('#addemployee').text('Add Vendor');
                 $('input[type=text]').val('');
             }
             // failed response
