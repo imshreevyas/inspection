@@ -91,15 +91,22 @@ $routes->group("vendor/(:any)", function ($routes) {
     $routes->get('allGeneralSettings', 'VendorController::allGeneralSettings');
     $routes->get('logout', 'VendorController::SignOut');
     
-    // Main Amdin Post Routes
-    $routes->post('checkLogin', 'VendorController::checkLogin');
-    $routes->post('dataInsertSidebar', 'VendorController::dataInsertSidebar');
-    $routes->post('dataInsertGeneralSettings', 'VendorController::dataInsertGeneralSettings');
-    $routes->post('dataInsertVendor', 'VendorController::dataInsertVendor');
 
-    // role ajax routes
-    $routes->post('dataInsertRole', 'VendorController::dataInsertRole');
-    $routes->post('dataUpdateRole/(:any)', 'VendorController::dataUpdateRole/$2');
+    // Vendor All Add Post Routes Starts
+        $routes->post('checkLogin', 'VendorController::checkLogin');
+
+        $routes->post('dataInsertSidebar', 'VendorController::dataInsertSidebar');
+        $routes->post('dataInsertGeneralSettings', 'VendorController::dataInsertGeneralSettings');
+        $routes->post('dataInsertVendor', 'VendorController::dataInsertVendor');
+
+        // Employee Section
+        $routes->post('dataInsertEmployees', 'VendorController::dataInsertEmployees'); // Add Employee
+        $routes->post('dataUpdateEmployees/(:any)', 'VendorController::dataUpdateEmployees/$2'); // Edit Employee
+
+        // Role Section
+        $routes->post('dataInsertRole', 'VendorController::dataInsertRole');
+        $routes->post('dataUpdateRole/(:any)', 'VendorController::dataUpdateRole/$2');
+    // Vendor All Add Post Routes Ends
 
 });
 

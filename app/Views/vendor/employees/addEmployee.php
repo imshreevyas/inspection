@@ -32,47 +32,46 @@
 
                                 <h4 class="card-title">Enter Employee Details</h4>
 
-                                <!-- Vendor Fullname -->
+                                <!-- Vendor Employee Fullname -->
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Employee FullName : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text"  placeholder="eg: Jhon Smith Pvt Ltd" id="companyName">
+                                        <input class="form-control" type="text"  placeholder="eg: Jhon Smith Pvt Ltd" id="employeeName" oninput="FirstLetterCapital('#employeeName')">
                                     </div>
                                 </div>
 
-                                <!-- vendor username -->
+                                <!-- vendor Employee username -->
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Username : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: jhonsmith"  id="username">
+                                        <input class="form-control" type="text" placeholder="eg: jhonsmith"  id="username" oninput="NoSpecialCharandLowercase('#username')">
                                     </div>
                                 </div>
 
-                                <!-- Vendor Email -->
+                                <!-- Vendor Employee Email -->
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Email : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: jhonsmith@gmail.com" id="companyEmail">
+                                        <input class="form-control" type="text" placeholder="eg: jhonsmith@gmail.com" id="employeeEmail">
                                     </div>
                                 </div>
 
-                                <!-- Vendor Contact number -->
+                                <!-- Vendor Employee Contact number -->
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Contact Number : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: 7894561230 "
-                                            id="companyNumber">
+                                        <input class="form-control" type="text" placeholder="eg: 7894561230 " id="employeeNumber" oninput="OnlyNumber('#employeeNumber')">
                                     </div>
                                 </div>
                                 
-                                <!-- Select Package dropdown -->
+                                <!-- Select Role dropdown -->
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Select Role : </label>
                                     <div class="col-sm-10">
                                         <select name="role_id" class="form-control" id="role_id">
-                                            <option value="1">Role 1</option>
-                                            <option value="2">Role  2</option>
-                                            <option value="3">Role 3</option>
+                                            <?php foreach($allRoles as $key => $singleRoles){ ?>
+                                            <option value="<?= $singleRoles['id'] ?>"> <?= $singleRoles['role_name'] ?></option>
+                                            <?php } ?>
                                         </select>
                                     </div>
                                 </div>

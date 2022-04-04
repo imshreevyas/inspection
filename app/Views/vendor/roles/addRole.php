@@ -99,13 +99,12 @@
 
 <?php $errors = session('errorMsg'); if($errors != ''){ 
     foreach($errors as $error){
-    ?>
+?>
     <script>
         toastr['<?= session('errorType') ?>']('<?= $error ?>');
     </script>
 <?php 
         }
     } 
-session()->remove(['errorMsg','errorType']);  
-
+    session()->remove(['errorMsg','errorType']);  
 ?>

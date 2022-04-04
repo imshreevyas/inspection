@@ -42,3 +42,4 @@
 
 <!-- Website base url -->
 <script> var base_url = '<?= base_url(); ?>'; </script> 
+<script> var username = '<?= $username ?>'; </script> 

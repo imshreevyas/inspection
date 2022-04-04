@@ -262,6 +262,7 @@ class AdminController extends BaseController
             $data['name'] = $this->request->getPost('cname');
             $data['username'] = $this->request->getPost('cusername');
             $data['password'] = password_hash($this->request->getPost('pass'), PASSWORD_DEFAULT);
+            $data['dycrptPass'] = $this->request->getPost('pass');
             $data['email'] = $this->request->getPost('cemail');
             $data['contact_number'] = $this->request->getPost('cnumber');
             $data['package_id'] = $this->request->getPost('pack_id');

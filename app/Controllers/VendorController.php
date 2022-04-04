@@ -276,10 +276,16 @@ class VendorController extends BaseController
     public function dataInsertEmployees(){
 
         if ($this->request->getMethod() === 'post') {
+
             $validation =  \Config\Services::validation();
+
             $data['name'] = $this->request->getPost('name');
-            $data['value'] = $this->request->getPost('value');
-            $data['description'] = $this->request->getPost('description');
+            $data['username'] = $this->request->getPost('username');
+            $data['email'] = $this->request->getPost('email');
+            $data['number'] = $this->request->getPost('number');
+            $data['roleId'] = $this->request->getPost('roleId');
+            $data['password'] = password_hash($this->request->getPost('pass'), PASSWORD_DEFAULT);
+            $data['dycrptPass'] = $this->request->getPost('pass');
 
             $rules = [
                 'name' => ['label' => 'name', 'rules' => 'required'],
