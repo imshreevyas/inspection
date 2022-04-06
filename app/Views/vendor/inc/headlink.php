@@ -26,6 +26,7 @@
 
 <!-- Responsive datatable examples -->
 <link href="<?= base_url('public/assets/main/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') ?>" rel="stylesheet" type="text/css" />
+
 <?php  } ?>
 
 <!-- Bootstrap Css -->
@@ -40,6 +41,8 @@
 
 <link href="<?= base_url('public/assets/main/css/toastr.min.css') ?>" rel="stylesheet" type="text/css" />
 
-<!-- Website base url -->
-<script> var base_url = '<?= base_url(); ?>'; </script> 
-<script> var username = '<?= $username ?>'; </script> 
+<!-- Website JS Config -->
+<script type="text/javascript"> 
+var base_url = '<?= base_url(); ?>';
+var vendorUsername = '<?= $vendorUsername ?>'; 
+</script>

@@ -36,7 +36,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Employee FullName : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text"  placeholder="eg: Jhon Smith Pvt Ltd" id="companyName" value="<?= $singleEmployees['name'] ?>">
+                                        <input class="form-control" type="text"  placeholder="eg: Jhon Smith Pvt Ltd" id="employeeName" value="<?= $singleEmployees['name'] ?>">
                                     </div>
                                 </div>
 
@@ -52,7 +52,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Email : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: jhonsmith@gmail.com" id="companyEmail" value="<?= $singleEmployees['email'] ?>">
+                                        <input class="form-control" type="text" placeholder="eg: jhonsmith@gmail.com" id="employeeEmail" value="<?= $singleEmployees['email'] ?>">
                                     </div>
                                 </div>
 
@@ -60,7 +60,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Contact Number : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: 7894561230 " id="companyNumber" value="<?= $singleEmployees['mobile'] ?>">
+                                        <input class="form-control" type="text" placeholder="eg: 7894561230 " id="employeeNumber" value="<?= $singleEmployees['mobile'] ?>">
                                     </div>
                                 </div>
                                 
@@ -87,7 +87,7 @@
 
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button id="editvendor" type="button" class="btn btn-primary">Edit Employee</button>
+                                        <button id="updateemployee" type="button" class="btn btn-primary" value="<?= base64_encode($singleEmployees['id']) ?>">Edit Employee</button>
                                     </div>
                                 </div>
                             </div>
@@ -108,4 +108,4 @@
 <?php  include(VIEWPATH.'vendor/inc/footer.php') ?>
 <!-- footer -->
 
-<script src="<?= base_url('public/assets/main/ajaxPages/vendor/editEmployee.js') ?> "></script>
+<script src="<?= base_url('public/assets/main/ajaxPages/vendor/employees/editEmployee.js') ?> "></script>

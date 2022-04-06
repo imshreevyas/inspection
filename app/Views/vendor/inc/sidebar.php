@@ -12,7 +12,7 @@
 
                         <?php if(session('roleSidebar') != '' || count(session('roleSidebar')) > 0): foreach(session('roleSidebar') as $key => $sidebarParent): ?>
                         <li>
-                            <a href="<?= count($sidebarParent) > 1 ? 'javascript: void(0);' : base_url('/vendor/'.$username.'/'.$sidebarParent[0]['sidebar_url']) ?>" class="<?= count($sidebarParent) > 1 ? 'has-arrow' : '' ?>  waves-effect">
+                            <a href="<?= count($sidebarParent) > 1 ? 'javascript: void(0);' : base_url('/vendor/'.$vendorUsername.'/'.$sidebarParent[0]['sidebar_url']) ?>" class="<?= count($sidebarParent) > 1 ? 'has-arrow' : '' ?>  waves-effect">
                                 <i class="ri-dashboard-line"></i>
                                 <span><?= $key ?></span>
                             </a>
@@ -20,7 +20,7 @@
                             <?php if(count($sidebarParent) > 1 ){ ?>
                             <ul class="sub-menu" aria-expanded="false">
                                 <?php foreach($sidebarParent as $sidebarChild){ ?>
-                                    <li><a href="<?= base_url('/vendor/'.$username.'/'.$sidebarChild['sidebar_url']) ?>"><?= $sidebarChild['sidebar_name'] ?></a></li>
+                                    <li><a href="<?= base_url('/vendor/'.$vendorUsername.'/'.$sidebarChild['sidebar_url']) ?>"><?= $sidebarChild['sidebar_name'] ?></a></li>
                                 <?php } ?>
                             </ul>
                             <?php } ?>

@@ -36,7 +36,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Client FullName : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text"  placeholder="eg: Jhon Smith Pvt Ltd" id="clientName" oninput="FirstLetterCapital('#employeeName')">
+                                        <input class="form-control" type="text"  placeholder="eg: Jhon Smith Pvt Ltd" id="clientName" oninput="FirstLetterCapital('#employeeName')" value="<?= $singleClient['name'] ?>">
                                     </div>
                                 </div>
 
@@ -44,7 +44,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Email : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: jhonsmith@gmail.com" id="clientEmail">
+                                        <input class="form-control" type="text" placeholder="eg: jhonsmith@gmail.com" id="clientEmail" value="<?= $singleClient['email'] ?>">
                                     </div>
                                 </div>
 
@@ -52,7 +52,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Contact Number : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: 7894561230 " id="clientNumber" oninput="OnlyNumber('#clientNumber')">
+                                        <input class="form-control" type="text" placeholder="eg: 7894561230 " id="clientNumber" oninput="OnlyNumber('#clientNumber')" value="<?= $singleClient['mobile'] ?>">
                                     </div>
                                 </div>
 
@@ -60,13 +60,13 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Full Address : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: jhonsmith"  id="address">
+                                        <input class="form-control" type="text" placeholder="eg: jhonsmith"  id="address" value="<?= $singleClient['address'] ?>">
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button id="addclient" type="button" class="btn btn-primary">Add Client</button>
+                                        <button id="updateClient" type="button" class="btn btn-primary" value="<?= base64_encode($singleClient['id']) ?>">Edit Client</button>
                                     </div>
                                 </div>
                             </div>
@@ -87,4 +87,4 @@
 <?php  include(VIEWPATH.'vendor/inc/footer.php') ?>
 <!-- footer -->
 
-<script src="<?= base_url('public/assets/main/ajaxPages/vendor/clients/addClients.js') ?> "></script>
+<script src="<?= base_url('public/assets/main/ajaxPages/vendor/clients/editClients.js') ?> "></script>

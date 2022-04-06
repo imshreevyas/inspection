@@ -84,7 +84,19 @@ $routes->group("vendor/(:any)", function ($routes) {
     // Employee Section Ends
 
 
-    $routes->get('addClient', 'VendorController::addVendor');
+    // Client Section starts
+    $routes->get('addClient', 'VendorController::addClient');
+    $routes->get('editClient/(:any)', 'VendorController::editClient/$2');
+    $routes->get('allClients', 'VendorController::allClients');
+    // Client Section Ends
+
+    // Assets Section starts
+    $routes->get('addAsset', 'VendorController::addAsset');
+    $routes->get('editAsset/(:any)', 'VendorController::editAsset/$2');
+    $routes->get('allAssets', 'VendorController::allAssets');
+    // Assets Section Ends
+
+
     $routes->get('addProduct', 'VendorController::addProduct');
     
     $routes->get('allVendor', 'VendorController::allVendor');
@@ -95,17 +107,27 @@ $routes->group("vendor/(:any)", function ($routes) {
     // Vendor All Add Post Routes Starts
         $routes->post('checkLogin', 'VendorController::checkLogin');
 
+        // Common Modules Section
         $routes->post('dataInsertSidebar', 'VendorController::dataInsertSidebar');
         $routes->post('dataInsertGeneralSettings', 'VendorController::dataInsertGeneralSettings');
         $routes->post('dataInsertVendor', 'VendorController::dataInsertVendor');
-
-        // Employee Section
-        $routes->post('dataInsertEmployees', 'VendorController::dataInsertEmployees'); // Add Employee
-        $routes->post('dataUpdateEmployees/(:any)', 'VendorController::dataUpdateEmployees/$2'); // Edit Employee
-
+      
         // Role Section
         $routes->post('dataInsertRole', 'VendorController::dataInsertRole');
         $routes->post('dataUpdateRole/(:any)', 'VendorController::dataUpdateRole/$2');
+        
+        // Employee Section
+        $routes->post('dataInsertEmployee', 'VendorController::dataInsertEmployee'); // Add Employee
+        $routes->post('dataUpdateEmployee/(:any)', 'VendorController::dataUpdateEmployee/$2'); // Edit Employee
+
+        // Client Section
+        $routes->post('dataInsertClient', 'VendorController::dataInsertClient'); // Add Client
+        $routes->post('dataUpdateClient/(:any)', 'VendorController::dataUpdateClient/$2'); // Edit Client
+
+        // Assets Section
+        $routes->post('dataInsertAsset', 'VendorController::dataInsertAsset'); // Add Assets
+        $routes->post('dataUpdateAsset/(:any)', 'VendorController::dataUpdateAsset/$2'); // Edit Assets
+
     // Vendor All Add Post Routes Ends
 
 });

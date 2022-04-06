@@ -96,8 +96,11 @@ class VendorController extends BaseController
     }
 
     public function editEmployees($id){
+        if($id == '')
+            return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/manageEmployees'));
+
         $data['pageHas'] = 'tableView';
-        $data['pageName'] = 'All Employee';
+        $data['pageName'] = 'Edit Employee';
         $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
         $data['singleEmployees'] = $this->vendor_model->singleEmployee($id, $this->vendorId);
         return $this->loadViews('employees/editEmployee',$data);
@@ -112,6 +115,63 @@ class VendorController extends BaseController
     // Employee Section Ends
 
 
+    // Clients Section Starts
+    public function addClient(){
+        $data['pageHas'] = 'form';
+        $data['pageName'] = 'Add Client';
+        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+        return $this->loadViews('clients/addClient',$data);
+    }
+
+    public function editClient($id){
+        if($id == '')
+            return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/manageClients'));
+
+        $data['pageHas'] = 'tableView';
+        $data['pageName'] = 'Edit Clients';
+        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+        $data['singleClient'] = $this->vendor_model->singleClient($id, $this->vendorId);
+        return $this->loadViews('clients/editClient',$data);
+    }
+
+    public function allClients(){
+        $data['pageHas'] = 'tableView';
+        $data['pageName'] = 'All Client';
+        $data['allClients'] = $this->vendor_model->clientList($this->vendorId);
+        return $this->loadViews('clients/manageClients',$data);
+    }
+    // Clients Section Ends
+
+
+    // Assets Section Starts
+    public function addAsset(){
+        $data['pageHas'] = 'form';
+        $data['pageName'] = 'Add Asset';
+        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+        return $this->loadViews('clients/addClient',$data);
+    }
+
+    public function editAsset($id){
+        if($id == '')
+            return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/manageAssets'));
+
+        $data['pageHas'] = 'tableView';
+        $data['pageName'] = 'Edit Asset';
+        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+        $data['singleClient'] = $this->vendor_model->singleClient($id, $this->vendorId);
+        return $this->loadViews('clients/editClient',$data);
+    }
+
+    public function allAsset(){
+        $data['pageHas'] = 'tableView';
+        $data['pageName'] = 'All Asset';
+        $data['allClients'] = $this->vendor_model->clientList($this->vendorId);
+        return $this->loadViews('clients/manageClients',$data);
+    }
+
+    // Assets Section Ends
+
+
 
     // Product Sections Starts
     public function addProduct(){
@@ -121,19 +181,11 @@ class VendorController extends BaseController
     }
     // Product Section Ends
 
-    public function addClient(){
-        $data['pageHas'] = 'form';
-        $data['pageName'] = 'Add Client';
-        return $this->loadViews('clients/addClient',$data);
-    }
-
     public function addInspectionSchedule(){
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Settings';
         return $this->loadViews('generalSettings/addGeneralSettings',$data);
     }
-
-    
 
     public function allProducts(){
         $data['pageHas'] = 'tableView';
@@ -142,12 +194,6 @@ class VendorController extends BaseController
         return $this->loadViews('sidebar/manageSidebar',$data);
     }
 
-    public function allClients(){
-        $data['pageHas'] = 'tableView';
-        $data['pageName'] = 'All Sidebar';
-        $data['allSidebar'] = $this->vendor_model->sidebarMaster();
-        return $this->loadViews('sidebar/manageSidebar',$data);
-    }
 
     public function allInspectionSchedule(){
         $data['pageHas'] = 'tableView';
@@ -229,128 +275,15 @@ class VendorController extends BaseController
         }
     }
 
-    // validate sidebar insert frilds and insert into DB
-    public function dataInsertClients(){
-
-        if ($this->request->getMethod() === 'post') {
-            $validation =  \Config\Services::validation();
-            $data['parent_name'] = $this->request->getPost('parent');
-            $data['sidebar_name'] = $this->request->getPost('name');
-            $data['sidebar_url'] = $this->request->getPost('url');
-            $data['sidebar_icon'] = $this->request->getPost('icon');
-
-            $data['add_access'] = $this->request->getPost('add');
-            $data['edit_access'] = $this->request->getPost('edit');
-            $data['view_access'] = $this->request->getPost('view');
-            $data['update_access'] = $this->request->getPost('update_status');
-            $data['panel_type'] = 1;
-
-            if($data['add_access'] == 0 && $data['edit_access'] == 0 && $data['view_access'] == 0 && $data['update_access'] == 0){
-                return $this->respond(['status' => $this->unAuthorized, 'message' => 'Atleast one access is mandatory']);
-            }
-
-            $rules = [
-                'parent' => ['label' => 'parent', 'rules' => 'required'],
-                'name' => ['label' => 'name', 'rules' => 'required'],
-                'url' => ['label' => 'url', 'rules' => 'required'],
-                'icon' => ['label' => 'icon', 'rules' => 'required']
-            ];
-
-            if ($this->validate($rules) == false) {
-                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
-            }else{
-                $data['created_date'] = date('Y-m-d H:i:s');
-                $data['status'] = 1;
-                if($this->addData('sidebar_master',$data)){
-                    return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
-                } else {
-                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
-                }
-            }
-        }else{
-            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
-        }
-    }
-
-    // validate Employee values and insert
-    public function dataInsertEmployees(){
-
-        if ($this->request->getMethod() === 'post') {
-
-            $validation =  \Config\Services::validation();
-
-            $data['name'] = $this->request->getPost('name');
-            $data['username'] = $this->request->getPost('username');
-            $data['email'] = $this->request->getPost('email');
-            $data['number'] = $this->request->getPost('number');
-            $data['roleId'] = $this->request->getPost('roleId');
-            $data['password'] = password_hash($this->request->getPost('pass'), PASSWORD_DEFAULT);
-            $data['dycrptPass'] = $this->request->getPost('pass');
-
-            $rules = [
-                'name' => ['label' => 'name', 'rules' => 'required'],
-                'value' => ['label' => 'value', 'rules' => 'required'],
-                'description' => ['label' => 'description', 'rules' => 'required']
-            ];
-
-            if ($this->validate($rules) == false) {
-                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
-            }else{
-
-                $data['created_date'] = date('Y-m-d H:i:s');
-                $data['status'] = 1;
-
-                if($this->addData('vendor_emp',$data)){
-                    return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
-                } else {
-                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
-                }
-            }
-        }else{
-            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
-        }
-    }
-
-    public function dataUpdateEmployee(){
-        if ($this->request->getMethod() === 'post') {
-            $validation =  \Config\Services::validation();
-            $data['name'] = $this->request->getPost('name');
-            $data['value'] = $this->request->getPost('value');
-            $data['description'] = $this->request->getPost('description');
-
-            $rules = [
-                'name' => ['label' => 'name', 'rules' => 'required'],
-                'value' => ['label' => 'value', 'rules' => 'required'],
-                'description' => ['label' => 'description', 'rules' => 'required']
-            ];
-
-            if ($this->validate($rules) == false) {
-                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
-            }else{
-
-                $data['created_date'] = date('Y-m-d H:i:s');
-                $data['status'] = 1;
-
-                if($this->addData('generalsettings',$data)){
-                    return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
-                } else {
-                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
-                }
-            }
-        }else{
-            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
-        }
-    }
-
-    // Role Insert function
+    // Role Insert and update Function
     public function dataInsertRole(){
         try {
             if($this->request->getMethod() === 'post'){
-
+                
                 $validation =  \Config\Services::validation();
                 $roleName = $this->request->getPost('roleName');
                 $roles = $this->request->getPost('role');
-
+                
                 // validate input
                 $rules = [
                     'roleName' => ['label' => 'roleName', 'rules' => 'trim|required'],
@@ -382,7 +315,7 @@ class VendorController extends BaseController
                     $this->session->set($errorMsg);
                     return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/addRole'));
                 } else {
-
+                    
                     $errorMsg = array(
                         'errorType' => 'error',
                         'errorMsg' => ['Something went wrong, please try again!']
@@ -390,7 +323,7 @@ class VendorController extends BaseController
                     $this->session->set($errorMsg);
                     return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/addRole'));
                 }
-
+                
             }else{
                 $errorMsg = array(
                     'errorType' => 'error',
@@ -412,12 +345,12 @@ class VendorController extends BaseController
     public function dataUpdateRole($id){
         try {
             if($this->request->getMethod() === 'post'){
-
+                
                 $validation =  \Config\Services::validation();
                 $roleName = $this->request->getPost('roleName');
                 $roles = $this->request->getPost('role');
-
-
+                
+                
                 // validate input
                 $rules = [
                     'roleName' => ['label' => 'roleName', 'rules' => 'trim|required'],
@@ -449,7 +382,7 @@ class VendorController extends BaseController
                     $this->session->set($errorMsg);
                     return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/editRole/'.$id));
                 } else {
-
+                    
                     $errorMsg = array(
                         'errorType' => 'error',
                         'errorMsg' => ['Something went wrong, please try again!']
@@ -457,7 +390,7 @@ class VendorController extends BaseController
                     $this->session->set($errorMsg);
                     return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/editRole/'.$id));
                 }
-
+                
             }else{
                 $errorMsg = array(
                     'errorType' => 'error',
@@ -475,9 +408,295 @@ class VendorController extends BaseController
             return redirect()->to(base_url('/'.$this->vendorFolder.'/'.$this->vendorUsername.'/editRole/'.$id));
         }
     }
-
- 
     
+    
+    // Employee Insert and update Function
+    public function dataInsertEmployee(){
+
+        if ($this->request->getMethod() === 'post') {
+
+            
+            $validation =  \Config\Services::validation();
+
+            $rules = [
+
+                'data.name'     => [
+                    'label' => 'Name',
+                    'rules' => 'required|is_unique[vendor_emp.name]',
+                    'errors' => [
+                        'is_unique' => 'Username Already Taken.'
+                    ],
+                ],
+
+                'data.username' => [
+                    'label' => 'Username', 
+                    'rules' => 'required|is_unique[vendor_emp.username]',
+                    'errors' => [
+                        'is_unique' => 'Username Already Taken.'
+                    ],
+                ],
+
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                'data.role_id'   => ['label' => 'Role ', 'rules' => 'required'],
+                'data.pass'      => ['label' => 'Password', 'rules' => 'required'],
+                'data.cpass'     => ['label' => 'Confirm Password', 'rules' => 'required|matches[data.pass]'],
+            ];
+
+            if ($this->validate($rules) == false) {
+                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+            }else{
+                $data = $this->request->getPost('data');
+                
+
+                $data['vendor_id'] = $this->vendorId;
+                $data['password'] = password_hash($data['pass'], PASSWORD_DEFAULT);
+                $data['dycrptPass'] = $data['pass'];
+                $data['created_date'] = date('Y-m-d H:i:s');
+                $data['status'] = 1;
+
+                unset($data['pass']);
+                unset($data['cpass']);
+                
+                try{
+                    if($this->addData('vendor_emp',$data))
+                        return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
+                    else
+                        return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
+                }catch(Exception $e){
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Error Msg:'.$e]]);
+                }
+                
+            }
+        }else{
+            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
+        }
+    }
+
+    public function dataUpdateEmployee(){
+
+        if ($this->request->getMethod() === 'post') {
+
+            $validation =  \Config\Services::validation();
+            $where = $this->request->getPost('where');
+            $where['id'] = base64_decode($where['id']);
+            
+            $rules = [
+
+                'data.name'     => [
+                    'label' => 'Name',
+                    'rules' => 'required|is_unique[vendor_emp.name,id,'.$where['id'].']',
+                    'errors' => [
+                        'is_unique' => 'Name Already Taken.'
+                    ],
+                ],
+
+                'data.username' => [
+                    'label' => 'Username', 
+                    'rules' => 'required|is_unique[vendor_emp.username,id,'.$where['id'].']',
+                    'errors' => [
+                        'is_unique' => 'Username Already Taken.'
+                    ],
+                ],
+
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                'data.role_id'   => ['label' => 'Role ', 'rules' => 'required'],
+                
+            ];
+
+            if ($this->validate($rules) == false) {
+                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+            }else{
+
+                $data = $this->request->getPost('data');
+                if($data['pass'] != ''){
+                    $data['password'] = password_hash($data['pass'], PASSWORD_DEFAULT);
+                    $data['dycrptPass'] = $data['pass'];
+                }
+
+                unset($data['pass']);
+
+                if($this->updateData('vendor_emp', $data , $where )){
+                    return $this->respond(['status' => $this->statusOk, 'message' => ['Data Updated Successfully']]);
+                } else {
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
+                }
+            }
+        }else{
+            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
+        }
+    }
+
+
+    // Client Insert and update Function
+    public function dataInsertClient(){
+        if ($this->request->getMethod() === 'post') {
+
+            
+            $validation =  \Config\Services::validation();
+
+            $rules = [
+
+                'data.name'     => [
+                    'label' => 'Name',
+                    'rules' => 'required|is_unique[vendor_emp.name]',
+                    'errors' => [
+                        'is_unique' => 'Username Already Taken.'
+                    ],
+                ],
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+            ];
+
+            if ($this->validate($rules) == false) {
+                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+            }else{
+
+                $data = $this->request->getPost('data');
+                $data['vendor_id'] = $this->vendorId;
+                $data['created_date'] = date('Y-m-d H:i:s');
+                $data['status'] = 1;
+
+                try{
+                    if($this->addData('vendor_clients',$data))
+                        return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
+                    else
+                        return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
+                }catch(Exception $e){
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Error Msg:'.$e]]);
+                }
+                
+            }
+        }else{
+            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
+        }
+    }
+
+    public function dataUpdateClient(){
+        if ($this->request->getMethod() === 'post') {
+
+            $validation =  \Config\Services::validation();
+            $where = $this->request->getPost('where');
+            $where['id'] = base64_decode($where['id']);
+            
+            $rules = [
+
+                'data.name'     => [
+                    'label' => 'Name',
+                    'rules' => 'required|is_unique[vendor_emp.name,id,'.$where['id'].']',
+                    'errors' => [
+                        'is_unique' => 'Name Already Taken.'
+                    ],
+                ],
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                
+            ];
+
+            if ($this->validate($rules) == false) {
+                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+            }else{
+
+                $data = $this->request->getPost('data');
+
+                if($this->updateData('vendor_clients', $data , $where )){
+                    return $this->respond(['status' => $this->statusOk, 'message' => ['Data Updated Successfully']]);
+                } else {
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
+                }
+            }
+        }else{
+            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
+        }
+    }
+
+
+     
+    // Assets Insert and update Function
+    public function dataInsertAsset(){
+        if ($this->request->getMethod() === 'post') {
+
+            
+            $validation =  \Config\Services::validation();
+
+            $rules = [
+
+                'data.name'     => [
+                    'label' => 'Name',
+                    'rules' => 'required|is_unique[vendor_emp.name]',
+                    'errors' => [
+                        'is_unique' => 'Username Already Taken.'
+                    ],
+                ],
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+            ];
+
+            if ($this->validate($rules) == false) {
+                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+            }else{
+
+                $data = $this->request->getPost('data');
+                $data['vendor_id'] = $this->vendorId;
+                $data['created_date'] = date('Y-m-d H:i:s');
+                $data['status'] = 1;
+
+                try{
+                    if($this->addData('vendor_clients',$data))
+                        return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
+                    else
+                        return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
+                }catch(Exception $e){
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Error Msg:'.$e]]);
+                }
+                
+            }
+        }else{
+            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
+        }
+    }
+
+    public function dataUpdateAsset(){
+        if ($this->request->getMethod() === 'post') {
+
+            $validation =  \Config\Services::validation();
+            $where = $this->request->getPost('where');
+            $where['id'] = base64_decode($where['id']);
+            
+            $rules = [
+
+                'data.name'     => [
+                    'label' => 'Name',
+                    'rules' => 'required|is_unique[vendor_emp.name,id,'.$where['id'].']',
+                    'errors' => [
+                        'is_unique' => 'Name Already Taken.'
+                    ],
+                ],
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                
+            ];
+
+            if ($this->validate($rules) == false) {
+                return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+            }else{
+
+                $data = $this->request->getPost('data');
+
+                if($this->updateData('vendor_clients', $data , $where )){
+                    return $this->respond(['status' => $this->statusOk, 'message' => ['Data Updated Successfully']]);
+                } else {
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
+                }
+            }
+        }else{
+            return $this->respond(['status' => $this->unAuthorized, 'message' => 'Access Denied']);
+        }
+    }
+
+
+
 
     // create system logs
     public function createSystemLog($data){
@@ -539,7 +758,7 @@ class VendorController extends BaseController
 
             $underMaintenance = getDirectValue('generalsettings', 'value', 'name', 'underMaintenance'); // get underMaintenance status
             if ($underMaintenance == 0) {
-                $data['username'] = $this->vendorUsername;
+                $data['vendorUsername'] = $this->vendorUsername;
                 $data['notice_count'] = 2;
                 $data['title'] = $data['projectName'] . ' - ' . ucfirst($segments[1] == '' ? 'login' : $segments[1]);
                 $url = $this->vendorFolder . $url;

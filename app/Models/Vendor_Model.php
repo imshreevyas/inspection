@@ -203,7 +203,25 @@ class Vendor_Model extends Model
     {
         return $this->db->table('vendor_emp')->where(['id' => $id, 'vendor_id' => $vendor_id])->get()->getRowArray();
     }
+    
+    
+    public function clientList($id){
+        return $this->db->table('vendor_clients')->where('vendor_id',$id)->orderBy('id','DESC')->get()->getResultArray();
+    }
+    
+    public function singleClient($id,$vendor_id)
+    {
+        return $this->db->table('vendor_clients')->where(['id' => $id, 'vendor_id' => $vendor_id])->get()->getRowArray();
+    }
 
+    public function assetsList($id){
+        return $this->db->table('vendor_assets')->where('vendor_id',$id)->orderBy('id','DESC')->get()->getResultArray();
+    }
+    
+    public function singleAsset($id,$vendor_id)
+    {
+        return $this->db->table('vendor_assets')->where(['id' => $id, 'vendor_id' => $vendor_id])->get()->getRowArray();
+    }
 
     //************************************************Coupons Functions*********************************************
 

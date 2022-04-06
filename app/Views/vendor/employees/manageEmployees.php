@@ -67,7 +67,7 @@
                                         <td><?= $singleData['created_date'] ?></td>
                                         <td><?= $singleData['status'] == 1 ? '<span class="badge badge-soft-success font-size-13">Active</span>' : '<span class="badge badge-soft-danger font-size-13">Deactive</span>' ?></td>
                                         <td>
-                                            <a href="<?= base_url('/vendor/'.$username.'/editEmployee/'.$singleData['id']) ?>" class="btn btn-sm btn-primary">
+                                            <a href="<?= base_url('/vendor/'.$vendorUsername.'/editEmployee/'.$singleData['id']) ?>" class="btn btn-sm btn-primary">
                                                 <i class="ri-pencil-fill"></i>
                                             </a>
                                         </td>

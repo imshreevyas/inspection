@@ -1,32 +1,34 @@
 
 $("#addemployee").on("click", async function() {
-    var url = `${base_url}/vendor/${username}/dataInsertEmployee`;
+    var url = `${base_url}/vendor/${vendorUsername}/dataInsertEmployee`;
 
-    $('#addemployee').text('Please Wait...');
+    $('#addemployee').text('Creating Employee...');
     
-    var name      = validateInput('#employeeName', 'Employee name', "#addvendor", 'Add Vendor');
-    var username  = validateInput('#username', 'Username', "#addvendor", 'Add Vendor');
-    var email     = validateInput('#employeeEmail','Employee Email', "#addvendor", 'Add Vendor');
-    var number    = validateInput('#employeeNumber','Employee Mobile number', "#addvendor", 'Add Vendor');
-    var roleId    = validateInput('#role_id','Role', "#addvendor", 'Add Vendor');
-    var pass       = validateInput('#password','Password', "#addvendor", 'Add Vendor');
-    var cpass      = validateInput('#confirmPass','Confirm Password', "#addvendor", 'Add Vendor');
+    var name      = validateInput('#employeeName', 'Employee name', "#addemployee", 'Add Employee');
+    var username  = validateInput('#username', 'Username', "#addemployee", 'Add Employee');
+    var email     = validateInput('#employeeEmail','Employee Email', "#addemployee", 'Add Employee');
+    var mobile    = validateInput('#employeeNumber','Employee Mobile number', "#addemployee", 'Add Employee');
+    var role_id    = validateInput('#role_id','Role', "#addemployee", 'Add Employee');
+    var pass      = validateInput('#password','Password', "#addemployee", 'Add Employee');
+    var cpass     = validateInput('#confirmPass','Confirm Password', "#addemployee", 'Add Employee');
 
 
     if(pass != cpass){
         toastr.error('Password and Confirm Password Incorrect') //shows toaster of error 
-        $('#addemployee').text('Add Vendor');
+        $('#addemployee').text('Add Employee');
         return false;
     }
 
     try {
         const params = new URLSearchParams();
-        params.append('name', name);
-        params.append('username', username);
-        params.append('email', email);
-        params.append('number', number);
-        params.append('roleId', roleId);
-        params.append('pass', pass);
+        params.append('data[name]', name);
+        params.append('data[username]', username);
+        params.append('data[email]', email);
+        params.append('data[mobile]', mobile);
+        params.append('data[role_id]', role_id);
+        params.append('data[pass]', pass);
+        params.append('data[cpass]', cpass);
+        
 
         const response = await axios
         .post(url, params)
@@ -43,6 +45,7 @@ $("#addemployee").on("click", async function() {
                 
                 $('#addemployee').text('Add Employee');
                 $('input[type=text]').val('');
+                $('input[type=password]').val('');
             }
 
             // failed response

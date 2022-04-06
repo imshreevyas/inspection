@@ -30,7 +30,7 @@
                             <div class="card-body">
 
                                 <h4 class="card-title">Basic Roles Details</h4>
-                                    <form action="<?= base_url('vendor/'.$username.'/dataInsertRole'); ?>" method="POST">
+                                    <form action="<?= base_url('vendor/'.$vendorUsername.'/dataInsertRole'); ?>" method="POST">
                                     <!-- vendor username -->
                                     <div class="row mb-3">
                                         <label for="example-text-input" class="col-sm-2 col-form-label">Role Name : </label>
