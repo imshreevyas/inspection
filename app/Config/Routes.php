@@ -74,7 +74,7 @@ $routes->group("vendor/(:any)", function ($routes) {
     // Roles Section starts
     $routes->get('addRole', 'VendorController::addRole');
     $routes->get('editRole/(:any)', 'VendorController::editRole/$2');
-    $routes->get('manageRoles', 'VendorController::allRoles');
+    $routes->get('allRoles', 'VendorController::allRoles');
     // Roles Section Ends
     
     // Employees Section starts

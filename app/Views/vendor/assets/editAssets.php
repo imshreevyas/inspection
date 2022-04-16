@@ -30,43 +30,49 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <h4 class="card-title">Enter Client Details</h4>
+                                <h4 class="card-title">Enter Assets Details</h4>
 
-                                <!-- Vendor Client Fullname -->
+                                <!-- Vendor Assets Name -->
                                 <div class="row mb-3">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Client FullName : </label>
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Asset name : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text"  placeholder="eg: Jhon Smith Pvt Ltd" id="clientName" oninput="FirstLetterCapital('#employeeName')">
+                                        <input class="form-control" type="text"  placeholder="eg: Printing Machine" id="assetName" oninput="FirstLetterCapital('#assetName')">
                                     </div>
                                 </div>
 
-                                <!-- Vendor Client Email -->
+                                <!-- Vendor Assets Code -->
                                 <div class="row mb-3">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Email : </label>
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Asset Code : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: jhonsmith@gmail.com" id="clientEmail">
+                                        <input class="form-control" type="text"  placeholder="eg: ASD465A4SD1333" id="assetCode" oninput="FirstLetterCapital('#assetCode')">
                                     </div>
                                 </div>
 
-                                <!-- Vendor Client Contact number -->
+                                <!-- Vendor Assets Client Dropdown -->
                                 <div class="row mb-3">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Contact Number : </label>
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Select Client : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: 7894561230 " id="clientNumber" oninput="OnlyNumber('#clientNumber')">
+                                        <select name="clients" id="clients" class="form-control">
+                                            <option value="0" selected disabled>Select Client Name</option>
+                                            <?php if(count($allClients) > 0): foreach($allClients as $singleClients) : ?>
+                                                <option value="<?= $singleClients['id'] ?>"><?= $singleClients['name'] ?></option>
+                                            <?php endforeach; endif; ?>
+                                            <option value="-1">Other Client</option>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <!-- vendor Client Full Address -->
-                                <div class="row mb-3">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Full Address : </label>
+                                <!-- Vendor Assets Other Client Name  -->
+                                <div class="row mb-3 d-none" id="assetOtherClientDiv">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Other Client Name : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: jhonsmith"  id="address">
+                                        <input class="form-control" type="text"  placeholder="eg: Jhon" id="assetOtherClient">
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button id="addclient" type="button" class="btn btn-primary">Add Client</button>
+                                        <button id="addasset" type="button" class="btn btn-primary">Add Asset</button>
                                     </div>
                                 </div>
                             </div>
@@ -87,4 +93,4 @@
 <?php  include(VIEWPATH.'vendor/inc/footer.php') ?>
 <!-- footer -->
 
-<script src="<?= base_url('public/assets/main/ajaxPages/vendor/clients/addClients.js') ?> "></script>
+<script src="<?= base_url('public/assets/main/ajaxPages/vendor/assets/addAssets.js') ?> "></script>

@@ -19,32 +19,16 @@ class Vendor_Model extends Model
         return true;
     }
 
-    public function validate_credentials($table,$username, $password)
+    public function validate_credentials($table,$username, $password, $vendor_id = 0)
     {
-        $builder = $this->db->table($table);
-        $result = $builder->getWhere(array('username' => $username))->getResultArray();
-        if (count($result) == 1) {
-            if (!check_HashPass($password, $result[0]['password'])) {
-                $result['status'] = 0;
-                return $result;
-            }
-            if ($result[0]['status'] == 1) {
-                $this->update_last_login_emp($table,$username);
-                return $result[0];
-            } else {
-                $result['status'] = 2;
-                return $result;
-            }
-        }else{
-            $result['status'] = 0;
-            return $result;
-        }
-    }
 
-    public function validate_emp_credentials($table,$username, $password, $vendor_id)
-    {
+        $where['username'] = $username;
+        if($vendor_id != 0){
+            $where['vendor_id'] = $vendor_id;
+        }
+
         $builder = $this->db->table($table);
-        $result = $builder->getWhere(array('username' => $username, 'vendor_id'=>$vendor_id))->getResultArray();
+        $result = $builder->getWhere($where)->getResultArray();
         
         if (count($result) == 1) {
             if (!check_HashPass($password, $result[0]['password'])) {
@@ -199,28 +183,33 @@ class Vendor_Model extends Model
         return $this->db->table('vendor_emp')->where('vendor_id',$id)->orderBy('id','DESC')->get()->getResultArray();
     }
     
-    public function singleEmployee($id,$vendor_id)
+    public function singleEmployee($where)
     {
-        return $this->db->table('vendor_emp')->where(['id' => $id, 'vendor_id' => $vendor_id])->get()->getRowArray();
+        return $this->db->table('vendor_emp')->where($where)->get()->getRowArray();
     }
     
     
-    public function clientList($id){
-        return $this->db->table('vendor_clients')->where('vendor_id',$id)->orderBy('id','DESC')->get()->getResultArray();
-    }
-    
-    public function singleClient($id,$vendor_id)
-    {
-        return $this->db->table('vendor_clients')->where(['id' => $id, 'vendor_id' => $vendor_id])->get()->getRowArray();
+    public function clientList($where){
+        return $this->db->table('vendor_clients')->where($where)->orderBy('id','DESC')->get()->getResultArray();
     }
 
-    public function assetsList($id){
-        return $this->db->table('vendor_assets')->where('vendor_id',$id)->orderBy('id','DESC')->get()->getResultArray();
+    public function clientListDropdown($where){
+        $where['status'] = 1;
+        return $this->db->table('vendor_clients')->where($where)->orderBy('id','DESC')->get()->getResultArray();
     }
     
-    public function singleAsset($id,$vendor_id)
+    public function singleClient($where)
     {
-        return $this->db->table('vendor_assets')->where(['id' => $id, 'vendor_id' => $vendor_id])->get()->getRowArray();
+        return $this->db->table('vendor_clients')->where($where)->get()->getRowArray();
+    }
+
+    public function assetsList($where){
+        return $this->db->table('vendor_assets')->where($where)->orderBy('id','DESC')->get()->getResultArray();
+    }
+    
+    public function singleAsset($where)
+    {
+        return $this->db->table('vendor_assets')->where($where)->get()->getRowArray();
     }
 
     //************************************************Coupons Functions*********************************************
@@ -256,6 +245,11 @@ class Vendor_Model extends Model
         } else {
             return FALSE;
         }
+    }
+
+    
+    public function checkIfUinqueForVendor($data, $table){
+        return $this->db->table($table)->where([$data, 'vendor_id' => $vendor_id])->get()->getRowArray();
     }
    
 

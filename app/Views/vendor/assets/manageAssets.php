@@ -34,9 +34,9 @@
                                     <tr>
                                         <th>Id</th>
                                         <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Mobile</th>
-                                        <th>Address</th>
+                                        <th>Product Code</th>
+                                        <th>Client Name</th>
+                                        <th>Created By</th>
                                         <th>Created Date</th>
                                         <th>Status</th>
 
@@ -55,13 +55,13 @@
                                     <tr>
                                         <td><?= $i; ?></td>
                                         <td><?= $singleData['name'] ?></td>
-                                        <td><?= $singleData['email'] ?></td>
-                                        <td><?= $singleData['mobile'] ?></td>
-                                        <td><?= $singleData['address'] ?></td>
+                                        <td><?= $singleData['product_code'] ?></td>
+                                        <td><?= getDirectValue('vendor_clients','name','id',$singleData['client_id']) ?></td>
+                                        <td><?= getDirectValue('vendor_emp','name','id',$singleData['created_by']) ?></td>
                                         <td><?= $singleData['created_date'] ?></td>
                                         <td><?= $singleData['status'] == 1 ? '<span class="badge badge-soft-success font-size-13">Active</span>' : '<span class="badge badge-soft-danger font-size-13">Deactive</span>' ?></td>
                                         <td>
-                                            <a href="<?= base_url('/vendor/'.$vendorUsername.'/editClient/'.$singleData['id']) ?>" class="btn btn-sm btn-primary">
+                                            <a href="<?= base_url('/vendor/'.$vendorUsername.'/editAsset/'.$singleData['id']) ?>" class="btn btn-sm btn-primary">
                                                 <i class="ri-pencil-fill"></i>
                                             </a>
                                         </td>

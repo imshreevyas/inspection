@@ -55,7 +55,7 @@
                                         <td><?= $singleData['status'] == 1 ? '<span class="badge badge-soft-success font-size-13">Active</span>' : '<span class="badge badge-soft-danger font-size-13">Deactive</span>' ?></td>
                                         <!-- if given option to edit, update, delete -->
                                         <td>
-                                            <a  href="<?= base_url('/vendor/'.$username.'/editRole/'.$singleData['id']) ?>" type="button" class="btn btn-sm btn-primary">
+                                            <a  href="<?= base_url('/vendor/'.$vendorUsername.'/editRole/'.$singleData['id']) ?>" type="button" class="btn btn-sm btn-primary">
                                                 <i class="ri-pencil-fill"></i>
                                             </a>
                                         </td>

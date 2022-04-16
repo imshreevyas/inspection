@@ -18,6 +18,8 @@ class VendorController extends BaseController
     protected $vendor_id;
     protected $vendorURL;
     protected $vendorUsername;
+    protected $LoggedInUserID;
+    protected $user_type;
 
     public function __construct()
     {
@@ -36,6 +38,8 @@ class VendorController extends BaseController
         $this->methodNotAllowed = 405;
         $this->internalServerError = 500;
         $this->vendorId = $this->session->get('vendorId');
+        $this->LoggedInUserID = $this->session->get('LoggedInUserID');
+        $this->user_type = $this->session->get('user_type');
         $uri = service('uri');
         $segments = $uri->getSegments();
         $this->vendorUsername = $segments[1];
@@ -63,14 +67,21 @@ class VendorController extends BaseController
     public function addRole(){
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Role';
-        $data['vendorSidebar'] = $this->vendor_model->sidebarMaster();
+
+        $where = $this->getWhereFromUserType();
+        $where['role_name'] = 'Vendor_Admin';
+        $vendorAdminRoles = $this->vendor_model->allRoles($where);
+        $data['vendorSidebar'] = $this->generateSidebarData(json_decode($vendorAdminRoles[0]['perms'], true), 'addRole');
+
         return $this->loadViews('roles/addRole',$data);
     }
 
     public function allRoles(){
         $data['pageHas'] = 'tableView';
         $data['pageName'] = 'All Roles';
-        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+
+        $where = $this->getWhereFromUserType();  // get created by and vendor id according to user type.
+        $data['allRoles'] = $this->vendor_model->allRoles($where);
         return $this->loadViews('roles/manageRoles',$data);
     }
 
@@ -80,7 +91,12 @@ class VendorController extends BaseController
 
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Edit Role';
-        $data['vendorSidebar'] = $this->vendor_model->sidebarMaster();
+
+        $where = $this->getWhereFromUserType();
+        $where['role_name'] = 'Vendor_Admin';
+        $vendorAdminRoles = $this->vendor_model->allRoles($where);
+        $data['vendorSidebar'] = $this->generateSidebarData(json_decode($vendorAdminRoles[0]['perms'], true), 'addRole');
+
         $data['singleRole'] = $this->vendor_model->allRoles(['id' => $id]);
         return $this->loadViews('roles/editRole',$data);
     }
@@ -91,7 +107,8 @@ class VendorController extends BaseController
     public function addEmployees(){
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Employees';
-        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+        $where = $this->getWhereFromUserType();
+        $data['allRoles'] = $this->vendor_model->allRoles($where);
         return $this->loadViews('employees/addEmployee',$data);
     }
 
@@ -101,15 +118,20 @@ class VendorController extends BaseController
 
         $data['pageHas'] = 'tableView';
         $data['pageName'] = 'Edit Employee';
-        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
-        $data['singleEmployees'] = $this->vendor_model->singleEmployee($id, $this->vendorId);
+
+        $where = $this->getWhereFromUserType();
+        $data['allRoles'] = $this->vendor_model->allRoles($where);
+        
+        $where['id'] = $id;
+        $data['singleEmployees'] = $this->vendor_model->singleEmployee($where);
         return $this->loadViews('employees/editEmployee',$data);
     }
 
     public function allEmployees(){
         $data['pageHas'] = 'tableView';
         $data['pageName'] = 'All Employee';
-        $data['allEmployees'] = $this->vendor_model->employeeList($this->vendorId);
+        $where = $this->getWhereFromUserType();
+        $data['allEmployees'] = $this->vendor_model->employeeList($where);
         return $this->loadViews('employees/manageEmployees',$data);
     }
     // Employee Section Ends
@@ -119,7 +141,8 @@ class VendorController extends BaseController
     public function addClient(){
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Client';
-        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
+        $where = $this->getWhereFromUserType();
+        $data['allRoles'] = $this->vendor_model->allRoles($where);
         return $this->loadViews('clients/addClient',$data);
     }
 
@@ -129,15 +152,20 @@ class VendorController extends BaseController
 
         $data['pageHas'] = 'tableView';
         $data['pageName'] = 'Edit Clients';
-        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
-        $data['singleClient'] = $this->vendor_model->singleClient($id, $this->vendorId);
+
+        $where = $this->getWhereFromUserType();
+        $data['allRoles'] = $this->vendor_model->allRoles($where);
+
+        $where['id'] = $id;
+        $data['singleClient'] = $this->vendor_model->singleClient($where);
         return $this->loadViews('clients/editClient',$data);
     }
 
     public function allClients(){
         $data['pageHas'] = 'tableView';
         $data['pageName'] = 'All Client';
-        $data['allClients'] = $this->vendor_model->clientList($this->vendorId);
+        $where = $this->getWhereFromUserType();
+        $data['allClients'] = $this->vendor_model->clientList($where);
         return $this->loadViews('clients/manageClients',$data);
     }
     // Clients Section Ends
@@ -147,8 +175,10 @@ class VendorController extends BaseController
     public function addAsset(){
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Asset';
-        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
-        return $this->loadViews('clients/addClient',$data);
+        $where = $this->getWhereFromUserType();
+        $data['allRoles'] = $this->vendor_model->allRoles($where);
+        $data['allClients'] = $this->vendor_model->clientListDropdown($where);
+        return $this->loadViews('assets/addAsset',$data);
     }
 
     public function editAsset($id){
@@ -157,16 +187,22 @@ class VendorController extends BaseController
 
         $data['pageHas'] = 'tableView';
         $data['pageName'] = 'Edit Asset';
-        $data['allRoles'] = $this->vendor_model->allRoles(['created_by' => $this->vendorId]);
-        $data['singleClient'] = $this->vendor_model->singleClient($id, $this->vendorId);
-        return $this->loadViews('clients/editClient',$data);
+        
+        $where = $this->getWhereFromUserType();
+        $data['allRoles'] = $this->vendor_model->allRoles($where);
+        $data['allClients'] = $this->vendor_model->clientListDropdown($where);
+
+        $where['id'] = $id;
+        $data['singleClient'] = $this->vendor_model->singleAsset($where);
+        return $this->loadViews('assets/editAssets',$data);
     }
 
-    public function allAsset(){
+    public function allAssets(){
         $data['pageHas'] = 'tableView';
         $data['pageName'] = 'All Asset';
-        $data['allClients'] = $this->vendor_model->clientList($this->vendorId);
-        return $this->loadViews('clients/manageClients',$data);
+        $where = $this->getWhereFromUserType();
+        $data['allClients'] = $this->vendor_model->assetsList($where);
+        return $this->loadViews('assets/manageAssets',$data);
     }
 
     // Assets Section Ends
@@ -207,74 +243,7 @@ class VendorController extends BaseController
 
     // All functions Starts
     
-    // check login credentials & set session
-    public function checkLogin(){
-
-        $uri = service('uri');
-        $segments = $uri->getSegments();
-        $vendorUsername = $segments[1];
-        $vendor_id = getDirectValue('vendor','id','username',$vendorUsername);
-        
-        if($vendor_id == ''){
-            return $this->respond(['status' => $this->unAuthorized, 'message' => ['Invalid username in URL']]);
-        }
-
-        try {
-            if ($this->request->getMethod() === 'post') {
-
-                $table = 'vendor';
-                $validation =  \Config\Services::validation();
-                $username = $this->request->getVar('username');
-                $password = $this->request->getVar('password');
-                $loginType = $this->request->getVar('loginType');
     
-                $rules = [
-                    'username' => ['label' => 'username', 'rules' => 'required'],
-                    'password' => ['label' => 'password', 'rules' => 'required']
-                ];
-    
-                if ($this->validate($rules) == false) {
-                    return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
-                }
-    
-                if($loginType == '1'){
-                    $table = 'vendor_emp';
-                    $vendorDetails = $this->vendor_model->validate_emp_credentials($table,$username, $password, $vendor_id);
-                }else
-                    $vendorDetails = $this->vendor_model->validate_credentials($table,$username, $password);
-
-
-                if($vendorDetails['status'] == 1){
-    
-                    // set vendor sessions
-                    $vendorSession = array(
-                        'vendorId'           => $vendorDetails['id'],
-                        'vendorName'         => $vendorDetails['name'],
-                        'vendorUsername'     => $vendorDetails['username'],
-                        'role'               => $vendorDetails['role_id'],
-                        'is_logged_in'       => true
-                    );
-                    $this->session->set($vendorSession);
-                    return $this->respond(['status' => $this->statusOk, 'message' => ['User Verified, Welcome Back.']]);
-    
-                }else if($vendorDetails['status'] == 0){
-                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Incorrect Username / Password']]);
-                }else if($vendorDetails['status'] == 2){
-                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['User Deactivated']]);
-                } 
-    
-            }else{
-                return $this->respond(['status' => $this->methodNotAllowed, 'message' => 'Access Denied']);
-            }
-        } catch (\Exception $e) {
-            $data['functionName'] = 'Vendor Check Login Function';
-            $data['errorMsg'] = $e->getMessage();
-            $data['user_id'] = 0;
-            $data['user_id'] = date('Y-m-d h:i:s');
-            $this->createErrorLog($data);
-        }
-    }
-
     // Role Insert and update Function
     public function dataInsertRole(){
         try {
@@ -287,7 +256,7 @@ class VendorController extends BaseController
                 // validate input
                 $rules = [
                     'roleName' => ['label' => 'roleName', 'rules' => 'trim|required'],
-                    'role' => ['label' => 'rol ', 'rules' => 'required']
+                    'role' => ['label' => 'rol ', 'rules' => 'trim|required']
                 ];
 
                 if ($this->validate($rules) == false) {
@@ -300,6 +269,7 @@ class VendorController extends BaseController
                 }
 
                 $data['role_name'] = $roleName;
+                $data['vendor_id'] = $this->vendorId;
                 $data['perms'] = json_encode($roles);
                 $data['created_by'] = $this->vendorId;
                 $data['panel_type'] = 2;
@@ -540,13 +510,16 @@ class VendorController extends BaseController
 
                 'data.name'     => [
                     'label' => 'Name',
-                    'rules' => 'required|is_unique[vendor_emp.name]',
-                    'errors' => [
-                        'is_unique' => 'Username Already Taken.'
-                    ],
+                    'rules' => 'required'
                 ],
-                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
-                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|trim|valid_email'],
+                'data.mobile'    => [
+                    'label' => 'Mobile',
+                    'rules' => 'required|trim| min_length[10]|max_length[10]|is_unique[vendor_client.mobile]',
+                    'errors' => [
+                        'is_unique' => 'Mobile Number Already Taken.'
+                    ], 
+                ],
             ];
 
             if ($this->validate($rules) == false) {
@@ -556,6 +529,7 @@ class VendorController extends BaseController
                 $data = $this->request->getPost('data');
                 $data['vendor_id'] = $this->vendorId;
                 $data['created_date'] = date('Y-m-d H:i:s');
+                $data['created_by'] = $this->vendorId;
                 $data['status'] = 1;
 
                 try{
@@ -584,13 +558,13 @@ class VendorController extends BaseController
 
                 'data.name'     => [
                     'label' => 'Name',
-                    'rules' => 'required|is_unique[vendor_emp.name,id,'.$where['id'].']',
+                    'rules' => 'required|trim| is_unique[vendor_emp.name,id,'.$where['id'].']',
                     'errors' => [
                         'is_unique' => 'Name Already Taken.'
                     ],
                 ],
-                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
-                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|trim| valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|trim| min_length[10]|max_length[10]'],
                 
             ];
 
@@ -611,26 +585,36 @@ class VendorController extends BaseController
         }
     }
 
+    public function addNewClient($name){
+        $data['name'] = $name;
+        $data['email'] = 'dummy@dummymail.com';
+        $data['mobile'] = '9999999999';
+        $data['address'] = 'dummy address';
+        $data['created_date'] = date('Y-m-d H:i:s');
+        $data['status'] = 1;
+        foreach($this->getWhereFromUserType() as $key=>$value){
+            $data[$key] = $value;
+        }
+        if($this->user_type == 'admin')
+            $data['created_by'] = $this->vendorId;
 
-     
+        return $this->addDataReturnId('vendor_clients',$data);
+    }
+
     // Assets Insert and update Function
     public function dataInsertAsset(){
         if ($this->request->getMethod() === 'post') {
 
-            
             $validation =  \Config\Services::validation();
-
             $rules = [
-
                 'data.name'     => [
                     'label' => 'Name',
-                    'rules' => 'required|is_unique[vendor_emp.name]',
-                    'errors' => [
-                        'is_unique' => 'Username Already Taken.'
-                    ],
+                    'rules' => 'required|'
                 ],
-                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
-                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                'data.product_code'     => [
+                    'label' => 'Name',
+                    'rules' => 'required|is_unique[vendor_assets.product_code]'
+                ]
             ];
 
             if ($this->validate($rules) == false) {
@@ -638,12 +622,24 @@ class VendorController extends BaseController
             }else{
 
                 $data = $this->request->getPost('data');
-                $data['vendor_id'] = $this->vendorId;
                 $data['created_date'] = date('Y-m-d H:i:s');
                 $data['status'] = 1;
 
+                if($data['client_id'] == -1){
+                    $data['client_id'] = $this->addNewClient($data['client_otherName']);
+                }
+                
+                foreach($this->getWhereFromUserType() as $key=>$value){
+                    $data[$key] = $value;
+                }
+                
+                if($this->user_type == 'admin')
+                    $data['created_by'] = $this->vendorId;
+                    
+                unset($data['client_otherName']);
+
                 try{
-                    if($this->addData('vendor_clients',$data))
+                    if($this->addData('vendor_assets',$data))
                         return $this->respond(['status' => $this->statusOk, 'message' => ['Data inserted Successfully']]);
                     else
                         return $this->respond(['status' => $this->unAuthorized, 'message' => ['Something went wrong, please try again!']]);
@@ -668,13 +664,13 @@ class VendorController extends BaseController
 
                 'data.name'     => [
                     'label' => 'Name',
-                    'rules' => 'required|is_unique[vendor_emp.name,id,'.$where['id'].']',
+                    'rules' => 'required|trim| is_unique[vendor_emp.name,id,'.$where['id'].']',
                     'errors' => [
                         'is_unique' => 'Name Already Taken.'
                     ],
                 ],
-                'data.email'     => ['label' => 'Email', 'rules' => 'required|valid_email'],
-                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|min_length[10]|max_length[10]'],
+                'data.email'     => ['label' => 'Email', 'rules' => 'required|trim| valid_email'],
+                'data.mobile'    => ['label' => 'Mobile', 'rules' => 'required|trim| min_length[10]|max_length[10]'],
                 
             ];
 
@@ -696,8 +692,6 @@ class VendorController extends BaseController
     }
 
 
-
-
     // create system logs
     public function createSystemLog($data){
         return $this->addData('system_logs',$data);
@@ -716,6 +710,15 @@ class VendorController extends BaseController
         else
             return false;
     }
+
+    // common function to add data in DB
+    public function addDataReturnId($table,$data){
+        $builder = $this->db->table($table);
+        if($builder->insert($data))
+            return $this->db->insertID();
+        else
+            return 0;
+    }
     
     public function updateData($table,$data,$where){
         $builder = $this->db->table($table);
@@ -724,6 +727,83 @@ class VendorController extends BaseController
         else
             return false;
     }
+
+    // check login credentials & set session
+    public function checkLogin(){
+
+        $uri = service('uri');
+        $segments = $uri->getSegments();
+        $vendorUsername = $segments[1];
+        $vendor_id = getDirectValue('vendor', 'status', 'username', $vendorUsername);
+        
+        if($vendor_id == '')
+            return $this->respond(['status' => $this->unAuthorized, 'message' => ['Invalid URL / Invalid username in URL']]);
+        else if($vendor_id == 0)
+            return $this->respond(['status' => $this->unAuthorized, 'message' => ['Vendor Deactivated! please contact admin.']]);
+
+        try {
+            
+            if ($this->request->getMethod() === 'post') {
+
+                $validation =  \Config\Services::validation();
+
+                $username = $this->request->getVar('username');
+                $password = $this->request->getVar('password');
+                $loginType = $this->request->getVar('loginType');
+
+                $table = 'vendor';
+                $userSession = [];
+                $userSession['user_type'] = $loginType == '1' ? 'emp' : 'admin';    // Set user type as Admin, Emp for created by
+                $userSession['vendorId'] = $vendor_id;                              // by default his own id when admin.
+
+                $rules = [
+                    'username' => ['label' => 'username', 'rules' => 'required'],
+                    'password' => ['label' => 'password', 'rules' => 'required']
+                ];
+    
+                if ($this->validate($rules) == false) {
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => $validation->getErrors()]);
+                }
+
+                if($loginType == '1'){
+                    $table = 'vendor_emp';
+                    $userDetails = $this->vendor_model->validate_credentials($table, $username, $password, $vendor_id);
+                }else
+                    $userDetails = $this->vendor_model->validate_credentials($table, $username, $password, 0);
+                
+                if($userDetails['status'] == 1){
+                    
+                    // set vendor sessions
+                    if($loginType == '1')
+                        $userSession['vendorId']           = $userDetails['vendor_id'];
+                    
+                    $userSession['LoggedInUserID']     = $userDetails['id'];
+                    $userSession['vendorName']         = $userDetails['name'];
+                    $userSession['vendorUsername']     = $userDetails['username'];
+                    $userSession['role']               = $userDetails['role_id'];
+                    $userSession['is_logged_in']       = true;
+                    
+                    $this->session->set($userSession);
+                    return $this->respond(['status' => $this->statusOk, 'message' => ['User Verified, Welcome Back.']]);
+    
+                }else if($userDetails['status'] == 0){
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['Incorrect Username / Password']]);
+                }else if($userDetails['status'] == 2){
+                    return $this->respond(['status' => $this->unAuthorized, 'message' => ['User Deactivated']]);
+                } 
+    
+            }else
+                return $this->respond(['status' => $this->methodNotAllowed, 'message' => 'Access Denied']);
+
+        } catch (\Exception $e) {
+
+            $data['functionName'] = 'Vendor Check Login Function';
+            $data['errorMsg'] = $e->getMessage();
+            $data['created_date'] = date('Y-m-d h:i:s');
+            $this->createErrorLog($data);
+        }
+    }
+
 
     // common Loadview section
     public function loadViews($url = '/', $data = [])
@@ -779,22 +859,28 @@ class VendorController extends BaseController
     }
 
     public function createSidebarFromRole(){
-        $newsidebar = []; // sidebar as per user role
         if(session('is_logged_in')){
             $user_perms = json_decode($this->loadSidebarFields(session('role')),true);  // get roles as per Role id
-            $sidebars =  $this->vendor_model->sidebarMaster();  // get sidebar master
-            foreach($sidebars as $singleSidebar){
-                if(isset($user_perms[$singleSidebar['sidebar_url']])){
-                    $newsidebar[$singleSidebar['parent_name']][] = $singleSidebar;
-                }
-            }
-            
+            $newsidebar = $this->generateSidebarData($user_perms, 'session');
             $vendorSidebar['roleSidebar'] = $newsidebar;
+            // set side of user in session.
             $this->session->set($vendorSidebar);
         }
-        // set vendor sessions
     }
     
+    public function generateSidebarData($user_perms, $page = 'session'){
+        $newsidebar = []; 
+        $sidebars =  $this->vendor_model->sidebarMaster();  // get sidebar master
+        foreach($sidebars as $singleSidebar){
+            if(isset($user_perms[$singleSidebar['sidebar_url']])){
+                if($page == 'addRole')
+                    $newsidebar[] = $singleSidebar;
+                else
+                    $newsidebar[$singleSidebar['parent_name']][] = $singleSidebar;
+            }
+        }
+        return $newsidebar;
+    }
     // create Hash password
     public function hash_pass($pass)
     {
@@ -806,6 +892,18 @@ class VendorController extends BaseController
     {
         $this->session->destroy();
         return redirect()->to(base_url('/vendor/'.$this->vendorUsername));
+    }
+
+    public function getWhereFromUserType(){
+        $where = [];
+        if($this->user_type == 'emp'){
+            $where['vendor_id'] = $this->vendorId;
+            $where['created_by'] = $this->LoggedInUserID;
+        } else if($this->user_type == 'admin'){
+            $where['vendor_id'] = $this->vendorId;
+        }
+
+        return $where;
     }
 
     // All functions Ends

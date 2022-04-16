@@ -1,20 +1,35 @@
+$('#clients').change(function () {
+    var value = $('#clients').val();
+    if(value == -1){
+        $('#assetOtherClientDiv').removeClass('d-none');
+    }else{
+        if(!$('#assetOtherClientDiv').hasClass('d-none')){
+            $('#assetOtherClient').val('');
+            $('#assetOtherClientDiv').addClass('d-none')
+        }
+    }
+});
 
-$("#addclient").on("click", async function() {
 
-    var url = `${base_url}/vendor/${vendorUsername}/dataInsertClient`;
-    $('#addclient').text('Creating Client...');
+$("#addasset").on("click", async function() {
+
+    var url = `${base_url}/vendor/${vendorUsername}/dataInsertAsset`;
+    $('#addasset').text('Adding Asset...');
     
-    var name      = validateInput('#clientName', 'Client name', "#addclient", 'Add Client');
-    var email     = validateInput('#clientEmail','Client Email', "#addclient", 'Add Client');
-    var mobile    = validateInput('#clientNumber','Client Mobile number', "#addclient", 'Add Client');
-    var address   = validateInput('#address', 'Address', "#addclient", 'Add Client');
+    var name      = validateInput('#assetName', 'Asset Name', "#addasset", 'Add Asset');
+    var code     = validateInput('#assetCode','Asset Code', "#addasset", 'Add Asset');
+    var client_id    = validateInput('#clients','Client Name', "#addasset", 'Add Asset');
+    var client_otherName  = '';
+    if(client_id == -1){
+        var client_otherName   = validateInput('#assetOtherClient', 'Another Client Name', "#addasset", 'Add Asset');
+    }
     
     try {
         const params = new URLSearchParams();
         params.append('data[name]', name);
-        params.append('data[email]', email);
-        params.append('data[mobile]', mobile);
-        params.append('data[address]', address);
+        params.append('data[product_code]', code);
+        params.append('data[client_id]', client_id);
+        params.append('data[client_otherName]', client_otherName);
         
         const response = await axios
         .post(url, params)
@@ -29,13 +44,13 @@ $("#addclient").on("click", async function() {
                     toastr.success(message[key]);
                 });
                 
-                $('#addclient').text('Add Client');
+                $('#addasset').text('Add Asset');
                 $('input[type=text]').val('');
             }
 
             // failed response
             else if (status == 401 || status == 405) {
-                $('#addclient').text('Add Client');
+                $('#addasset').text('Add Asset');
                 Object.keys(message).forEach(function (key) {
                     toastr.error(message[key]);
                 });
@@ -47,7 +62,7 @@ $("#addclient").on("click", async function() {
     } 
     catch (error) {
         console.error(error);
-        $('#addclient').text('Add Client');
+        $('#addasset').text('Add Asset');
         toastr.error('Something went Wrong, try again later') //shows toaster of error 
     }
 });
