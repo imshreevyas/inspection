@@ -1,22 +1,14 @@
-add assets
-manage assets
-
-add clients
-manage clients
-
-add inspection
-manage inspection
-
 calender
-
 notice
-
 add support
 support revert
 
 
-
-- add updated by in all tables where needed
 - add roles system in main admin also 
+- Add logs to add and update
+- schedule insp
+- update schedule insp
+- update status for all 
 
+- admin activate/deactivate admin
 

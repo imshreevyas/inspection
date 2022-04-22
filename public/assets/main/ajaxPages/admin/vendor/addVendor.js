@@ -3,13 +3,13 @@ $("#addvendor").on("click", async function() {
 
     $('#addvendor').text('Please Wait...');
 
-    var cname          = validateInput('#companyName', 'Company name', "#addvendor", 'Add Vendor');
-    var cusername            = validateInput('#username', 'Username', "#addvendor", 'Add Vendor');
-    var cemail      = validateInput('#companyEmail','Company Email', "#addvendor", 'Add Vendor');
-    var cnumber            = validateInput('#companyNumber','Company number', "#addvendor", 'Add Vendor');
-    var pack_id            = validateInput('#package_id','Package', "#addvendor", 'Add Vendor');
-    var pass            = validateInput('#password','Password', "#addvendor", 'Add Vendor');
-    var cpass            = validateInput('#confirmPass','Confirm Password', "#addvendor", 'Add Vendor');
+    var cname      = validateInput('#companyName', 'Company name', "#addvendor", 'Add Vendor');
+    var cusername  = validateInput('#username', 'Username', "#addvendor", 'Add Vendor');
+    var cemail     = validateInput('#companyEmail','Company Email', "#addvendor", 'Add Vendor');
+    var cnumber    = validateInput('#companyNumber','Company number', "#addvendor", 'Add Vendor');
+    var pack_id    = validateInput('#package_id','Package', "#addvendor", 'Add Vendor');
+    var pass       = validateInput('#password','Password', "#addvendor", 'Add Vendor');
+    var cpass      = validateInput('#confirmPass','Confirm Password', "#addvendor", 'Add Vendor');
 
     var url = `${base_url}/mainAdmin/dataInsertVendor`;
 

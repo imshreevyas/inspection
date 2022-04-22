@@ -10,7 +10,24 @@
                     <ul class="metismenu list-unstyled" id="side-menu">
                         <li class="menu-title">Menu</li>
 
-                        <li>
+                        <?php if(session('sidebar') != '' || count(session('sidebar')) > 0): foreach(session('sidebar') as $key => $sidebarParent): ?>
+                            <li>
+                                <a href="<?= count($sidebarParent) > 1 ? 'javascript: void(0);' : base_url('/mainAdmin/'.$sidebarChild['sidebar_url']) ?>" class="<?= count($sidebarParent) > 1 ? 'has-arrow' : '' ?>  waves-effect">
+                                    <i class="ri-dashboard-line"></i>
+                                    <span><?= $key ?></span>
+                                </a>
+                                <?php if(count($sidebarParent) > 1 ){ ?>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <?php foreach($sidebarParent as $sidebarChild){ ?>
+                                            <li><a href="<?= base_url('/mainAdmin/'.$sidebarChild['sidebar_url']) ?>"><?= $sidebarChild['sidebar_name'] ?></a></li>
+                                        <?php } ?>
+                                    </ul>
+                                <?php } ?>
+
+                            </li>
+                        <?php endforeach; endif; ?>
+
+                        <!-- <li>
                             <a href="index.html" class="waves-effect">
                                 <i class="ri-dashboard-line"></i><span
                                     class="badge rounded-pill bg-success float-end">3</span>
@@ -248,9 +265,9 @@
                                     </ul>
                                 </li>
                             </ul>
-                        </li>
+                        </li>-->
 
-                    </ul>
+                    </ul> 
                 </div>
                 <!-- Sidebar -->
             </div>

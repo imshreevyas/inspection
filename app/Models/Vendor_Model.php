@@ -178,9 +178,9 @@ class Vendor_Model extends Model
         return $this->db->table('sidebar_master')->where('panel_type','2')->orderBy('sidebar_master.id','ASC')->get()->getResultArray();
     }
 
-    public function employeeList($id)
+    public function employeeList($where)
     {
-        return $this->db->table('vendor_emp')->where('vendor_id',$id)->orderBy('id','DESC')->get()->getResultArray();
+        return $this->db->table('vendor_emp')->where($where)->orderBy('id','DESC')->get()->getResultArray();
     }
     
     public function singleEmployee($where)

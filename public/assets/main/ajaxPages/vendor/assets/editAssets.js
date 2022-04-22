@@ -11,17 +11,20 @@ $('#clients').change(function () {
 });
 
 
-$("#addasset").on("click", async function() {
+$("#editasset").on("click", async function() {
 
-    var url = `${base_url}/vendor/${vendorUsername}/dataInsertAsset`;
-    $('#addasset').text('Adding Asset...');
+    var btnVal     = validateInput('#editasset','', "#editasset", 'Edit Asset');
+    var url = `${base_url}/vendor/${vendorUsername}/dataUpdateAsset/${btnVal}`;
+
+    $('#editasset').text('Upating Asset...');
     
-    var name      = validateInput('#assetName', 'Asset Name', "#addasset", 'Add Asset');
-    var code     = validateInput('#assetCode','Asset Code', "#addasset", 'Add Asset');
-    var client_id    = validateInput('#clients','Client Name', "#addasset", 'Add Asset');
+    var name      = validateInput('#assetName', 'Asset Name', "#editasset", 'Edit Asset');
+    var code     = validateInput('#assetCode','Asset Code', "#editasset", 'Edit Asset');
+    var client_id    = validateInput('#clients','Client Name', "#editasset", 'Edit Asset');
+
     var client_otherName  = '';
     if(client_id == -1){
-        var client_otherName   = validateInput('#assetOtherClient', 'Another Client Name', "#addasset", 'Add Asset');
+        var client_otherName   = validateInput('#assetOtherClient', 'Another Client Name', "#editasset", 'Edit Asset');
     }
     
     try {
@@ -30,6 +33,7 @@ $("#addasset").on("click", async function() {
         params.append('data[product_code]', code);
         params.append('data[client_id]', client_id);
         params.append('data[client_otherName]', client_otherName);
+        params.append('where[id]', btnVal);
         
         const response = await axios
         .post(url, params)
@@ -44,13 +48,12 @@ $("#addasset").on("click", async function() {
                     toastr.success(message[key]);
                 });
                 
-                $('#addasset').text('Add Asset');
-                $('input[type=text]').val('');
+                $('#editasset').text('Edit Asset');
             }
 
             // failed response
             else if (status == 401 || status == 405) {
-                $('#addasset').text('Add Asset');
+                $('#editasset').text('Edit Asset');
                 Object.keys(message).forEach(function (key) {
                     toastr.error(message[key]);
                 });
@@ -62,7 +65,7 @@ $("#addasset").on("click", async function() {
     } 
     catch (error) {
         console.error(error);
-        $('#addasset').text('Add Asset');
+        $('#editasset').text('Edit Asset');
         toastr.error('Something went Wrong, try again later') //shows toaster of error 
     }
 });

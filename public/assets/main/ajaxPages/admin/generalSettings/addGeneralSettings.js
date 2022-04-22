@@ -1,9 +1,10 @@
 $("#addsetting").on("click", async function() {
 
     $('#addsetting').text('Please Wait...');
-    var name          = validateInput('#name', 'Name', "#addsetting", 'Add Setting');
-    var value            = validateInput('#value', 'Value', "#addsetting", 'Add Setting');
-    var description     = validateInput('#description','Description', "#addsetting", 'Add Setting');
+    var name        = validateInput('#name', 'Name', "#addsetting", 'Add Setting');
+    var value       = validateInput('#value', 'Value', "#addsetting", 'Add Setting');
+    var description = validateInput('#description','Description', "#addsetting", 'Add Setting');
+    
     var url = `${base_url}/mainAdmin/dataInsertGeneralSettings`;
 
     try {

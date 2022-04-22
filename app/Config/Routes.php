@@ -33,6 +33,7 @@ $routes->get('/', 'AdminController::notFoundPage');
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 
+// Main Admin Routes 
 $routes->group("mainAdmin", function ($routes) {
 
     // $routes->get('/', 'Home::index');
@@ -41,33 +42,56 @@ $routes->group("mainAdmin", function ($routes) {
     // $routes->post('addSiteConfigs', 'Home::addSiteConfigs');
     // $routes->get('welcomePage', 'Home::welcomePage');
 
-    // Main Admin Get Routes
+
+    // Auth routes
     $routes->get('/', 'AdminController::login');
+
+    // Dashboard Routes
     $routes->get('dashboard', 'AdminController::dashboard');
 
+    // Sidebar Section Starts
     $routes->get('addSidebar', 'AdminController::addSidebar');
-    $routes->get('addVendor', 'AdminController::addVendor');
-    $routes->get('addGeneralSettings', 'AdminController::addGeneralSettings');
-
+    $routes->get('editSidebar/(:any)', 'AdminController::editSidebar/$1');
     $routes->get('allSidebar', 'AdminController::allSidebar');
+    // Sidebar Section Ends
+    
+    // Vendors Section starts
+    $routes->get('addVendor', 'AdminController::addVendor');
+    $routes->get('editVendor/(:any)', 'AdminController::editVendor/$1');
     $routes->get('allVendor', 'AdminController::allVendor');
+    // Vendors Section Ends
+    
+    // general Settings Starts
+    $routes->get('addGeneralSettings', 'AdminController::addGeneralSettings');
+    $routes->get('editGeneralSettings/(:any)', 'AdminController::editGeneralSettings/$1');
     $routes->get('allGeneralSettings', 'AdminController::allGeneralSettings');
-    $routes->get('logout', 'AdminController::SignOut');
+    // general Settings Ends
 
-
-    // Main Amdin Post Routes
+    
+    // Auth post Route 
     $routes->post('checkLogin', 'AdminController::checkLogin');
-    $routes->post('dataInsertSidebar', 'AdminController::dataInsertSidebar');
-    $routes->post('dataInsertGeneralSettings', 'AdminController::dataInsertGeneralSettings');
-    $routes->post('dataInsertVendor', 'AdminController::dataInsertVendor');
 
+    // Sidebar post Route 
+    $routes->post('dataInsertSidebar', 'AdminController::dataInsertSidebar');
+    $routes->post('dataUpdateSidebar', 'AdminController::dataUpdateSidebar');
+
+    // General Settings post Route 
+    $routes->post('dataInsertGeneralSettings', 'AdminController::dataInsertGeneralSettings');
+    $routes->post('dataUpdateGeneralSettings', 'AdminController::dataUpdateGeneralSettings');
+
+    // Vendor post Route 
+    $routes->post('dataInsertVendor', 'AdminController::dataInsertVendor');
+    $routes->post('dataUpdateVendor', 'AdminController::dataUpdateVendor');
+    
+    // Sign out route.
+    $routes->get('logout', 'AdminController::SignOut');
 });
 
 
 
+// Venodor Routes
 $routes->group("vendor/(:any)", function ($routes) {
 
-    // Main Admin Get Routes
     $routes->get('login', 'VendorController::login');
     $routes->get('dashboard', 'VendorController::dashboard');
 
@@ -95,6 +119,13 @@ $routes->group("vendor/(:any)", function ($routes) {
     $routes->get('editAsset/(:any)', 'VendorController::editAsset/$2');
     $routes->get('allAssets', 'VendorController::allAssets');
     // Assets Section Ends
+
+
+    // Inspection Section starts
+    $routes->get('scheduleInspection', 'VendorController::scheduleInspection');
+    $routes->get('editInspection/(:any)', 'VendorController::editInspection/$2');
+    $routes->get('allInspection', 'VendorController::allInspection');
+    // Inspection Section Ends
 
 
     $routes->get('addProduct', 'VendorController::addProduct');

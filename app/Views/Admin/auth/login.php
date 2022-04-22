@@ -113,7 +113,7 @@
 
         <!-- Login page js -->
         <script src="<?= base_url('public/assets/main/ajaxPages/commonFunctions.js') ?> "></script>
-        <script src="<?= base_url('public/assets/main/ajaxPages/login.js') ?> "></script>
+        <script src="<?= base_url('public/assets/main/ajaxPages/admin/auth/login.js') ?> "></script>
         
     </body>
 </html>

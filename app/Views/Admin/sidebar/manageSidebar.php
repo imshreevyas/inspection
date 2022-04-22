@@ -53,10 +53,10 @@
 
                                 <tbody>
 
-                                <?php $i = 0; if(count($allSidebar) > 0){ 
+                                <?php $i = 1; if(count($allSidebar) > 0){ 
                                     foreach($allSidebar as $singleData){ ?>
                                     <tr>
-                                        <td>1</td>
+                                        <td><?= $i ?></td>
                                         <td><?= $singleData['parent_name'] ?></td>
                                         <td><?= $singleData['sidebar_name'] ?></td>
                                         <td><?= $singleData['sidebar_url'] ?></td>
@@ -68,9 +68,9 @@
                                         <td><?= $singleData['created_date'] ?></td>
                                         <td><?= $singleData['status'] == 1 ? '<span class="badge badge-soft-success font-size-13">Active</span>' : '<span class="badge badge-soft-danger font-size-13">Deactive</span>' ?></td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-primary">
+                                            <a href="<?= base_url('/mainAdmin/editSidebar/'.$singleData['id']) ?>" class="btn btn-sm btn-primary">
                                                 <i class="ri-pencil-fill"></i>
-                                            </button>
+                                            </a>
                                         </td>
                                         <td>
                                             <input type="checkbox" id="switch1" switch="bool" checked />

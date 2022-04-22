@@ -36,7 +36,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Asset name : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text"  placeholder="eg: Printing Machine" id="assetName" oninput="FirstLetterCapital('#assetName')">
+                                        <input class="form-control" type="text"  placeholder="eg: Printing Machine" id="assetName" oninput="FirstLetterCapital('#assetName')" value="<?= $singleAsset['name'] ?>">
                                     </div>
                                 </div>
 
@@ -44,7 +44,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Asset Code : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text"  placeholder="eg: ASD465A4SD1333" id="assetCode" oninput="FirstLetterCapital('#assetCode')">
+                                        <input class="form-control" type="text"  placeholder="eg: ASD465A4SD1333" id="assetCode" oninput="FirstLetterCapital('#assetCode')" value="<?= $singleAsset['product_code'] ?>">
                                     </div>
                                 </div>
 
@@ -55,7 +55,9 @@
                                         <select name="clients" id="clients" class="form-control">
                                             <option value="0" selected disabled>Select Client Name</option>
                                             <?php if(count($allClients) > 0): foreach($allClients as $singleClients) : ?>
-                                                <option value="<?= $singleClients['id'] ?>"><?= $singleClients['name'] ?></option>
+                                                <option value="<?= $singleClients['id'] ?>" <?= $singleAsset['client_id'] == $singleClients['id'] ? 'Selected' : '' ?>>
+                                                    <?= $singleClients['name'] ?>
+                                                </option>
                                             <?php endforeach; endif; ?>
                                             <option value="-1">Other Client</option>
                                         </select>
@@ -72,7 +74,7 @@
 
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button id="addasset" type="button" class="btn btn-primary">Add Asset</button>
+                                        <button id="editasset" type="button" class="btn btn-primary" value="<?= base64_encode($singleAsset['id']) ?>">Edit Asset</button>
                                     </div>
                                 </div>
                             </div>
@@ -93,4 +95,4 @@
 <?php  include(VIEWPATH.'vendor/inc/footer.php') ?>
 <!-- footer -->
 
-<script src="<?= base_url('public/assets/main/ajaxPages/vendor/assets/addAssets.js') ?> "></script>
+<script src="<?= base_url('public/assets/main/ajaxPages/vendor/assets/editAssets.js') ?> "></script>

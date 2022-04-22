@@ -36,8 +36,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Parent Label Name : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text"  placeholder="eg: Sidebar Section"
-                                            id="parent">
+                                        <input class="form-control" type="text"  placeholder="eg: Sidebar Section" id="parent" value="<?= $singleSidebar['parent_name'] ?>">
                                     </div>
                                 </div>
 
@@ -45,8 +44,7 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Sidebar Name : </label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: Add Sidebar / Manage Sidebar"
-                                            id="name">
+                                        <input class="form-control" type="text" placeholder="eg: Add Sidebar / Manage Sidebar"  value="<?= $singleSidebar['sidebar_name'] ?>" id="name">
                                     </div>
                                 </div>
 
@@ -54,16 +52,24 @@
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Sidebar URL :</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: addSidebar "
-                                            id="url">
+                                        <input class="form-control" type="text" placeholder="eg: addSidebar" value="<?= $singleSidebar['sidebar_url'] ?>" id="url">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Sidebar Icon :</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" placeholder="eg: ri-account-circle-line"
-                                            id="icon">
+                                        <input class="form-control" type="text" placeholder="eg: ri-account-circle-line" id="icon" value="<?= $singleSidebar['sidebar_icon'] ?>">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Panel type:</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" type="text" placeholder="eg: ri-account-circle-line" id="panel_type">
+                                            <option value="1" <?= $singleSidebar['panel_type']  ? 'selected' : '' ?>>Admin</option>
+                                            <option value="2">Vendor</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -71,20 +77,20 @@
                                     <label for="example-text-input" class="col-sm-2 col-form-label">Select Page Access <a onclick="showCheckBoxExplaination('largeModal')" style="cursor: pointer;"><i class="fa fa-info-circle"></i></a> : </label>
                                     <div class="col-md-10">
                                         <label class="form-check">
-                                        <input type="checkbox" id="add" class="form-check-input">
-                                        <span class="form-check-label">Add Access</span>
+                                            <input type="checkbox" id="add" class="form-check-input" <?= $singleSidebar['add_access'] == 1 ? 'checked' : '' ?>>
+                                            <span class="form-check-label">Add Access</span>
                                         </label>
                                         <label class="form-check">
-                                        <input type="checkbox" id="view" class="form-check-input">
-                                        <span class="form-check-label">View Access</span>
+                                            <input type="checkbox" id="edit" class="form-check-input" <?= $singleSidebar['edit_access'] == 1 ? 'checked' : '' ?>>
+                                            <span class="form-check-label">Edit Access</span>
                                         </label>
                                         <label class="form-check">
-                                        <input type="checkbox" id="edit" class="form-check-input">
-                                        <span class="form-check-label">Edit Access</span>
+                                            <input type="checkbox" id="view" class="form-check-input" <?= $singleSidebar['view_access'] == 1 ? 'checked' : '' ?>>
+                                            <span class="form-check-label">View Access</span>
                                         </label>
                                         <label class="form-check">
-                                        <input type="checkbox" id="update_status" class="form-check-input">
-                                        <span class="form-check-label">Update Status Access</span>
+                                            <input type="checkbox" id="update_status" class="form-check-input" <?= $singleSidebar['update_access'] == 1 ? 'checked' : '' ?>>
+                                            <span class="form-check-label">Update Status Access</span>
                                         </label>
                                     </div>
                                 </div>
@@ -105,7 +111,7 @@
 
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button id="addsidebar" type="button" class="btn btn-primary">Add Sidebar</button>
+                                        <button id="editsidebar" type="button" class="btn btn-primary" value="<?= base64_encode($singleSidebar['id']) ?>">Edit Sidebar</button>
                                     </div>
                                 </div>
                             </div>
@@ -126,4 +132,4 @@
 <?php  include(VIEWPATH.'Admin/inc/footer.php') ?>
 <!-- footer -->
 
-<script src="<?= base_url('public/assets/main/ajaxPages/Admin/sidebar/addSidebar.js') ?> "></script>
+<script src="<?= base_url('public/assets/main/ajaxPages/Admin/sidebar/editSidebar.js') ?> "></script>

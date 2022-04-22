@@ -81,4 +81,4 @@
 <?php  include(VIEWPATH.'Admin/inc/footer.php') ?>
 <!-- footer -->
 
-<script src="<?= base_url('public/assets/main/ajaxPages/admin/generalSettings/addGeneralSettings.js') ?> "></script>
+<script src="<?= base_url('public/assets/main/ajaxPages/addGeneralSettings.js') ?> "></script>

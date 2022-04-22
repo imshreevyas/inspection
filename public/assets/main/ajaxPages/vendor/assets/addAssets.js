@@ -20,6 +20,7 @@ $("#addasset").on("click", async function() {
     var code     = validateInput('#assetCode','Asset Code', "#addasset", 'Add Asset');
     var client_id    = validateInput('#clients','Client Name', "#addasset", 'Add Asset');
     var client_otherName  = '';
+    
     if(client_id == -1){
         var client_otherName   = validateInput('#assetOtherClient', 'Another Client Name', "#addasset", 'Add Asset');
     }
@@ -43,7 +44,6 @@ $("#addasset").on("click", async function() {
                 Object.keys(message).forEach(function (key) {
                     toastr.success(message[key]);
                 });
-                
                 $('#addasset').text('Add Asset');
                 $('input[type=text]').val('');
             }

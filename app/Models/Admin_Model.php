@@ -75,11 +75,11 @@ class Admin_Model extends Model
             $email->attach($mail_data['attachment'],'application/pdf',$mail_data['file_name'], false);
         }
 
-/*        if(!empty($attachments) && is_array($attachments)){
-            foreach ($attachments as $key => $value) {
-                $email->attach($value);
-            }
-        }*/
+        // if(!empty($attachments) && is_array($attachments)){
+            // foreach ($attachments as $key => $value) {
+            //     $email->attach($value);
+            // }
+        // }
 
         $email->setSubject($mail_subject);
         $email->setMessage($mail_body);
@@ -93,70 +93,6 @@ class Admin_Model extends Model
         }
     }
 
-    public function create_excel($table, $where, $fields){
-
-        $styleArray = array(
-            'borders' => array(
-                'outline' => array(
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    'color' => array('argb' => '000000'),
-                ),
-            ),
-            'fill' => array(
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'startColor' => array('argb' => 'FF4F81BD')
-            ),
-            'font'  => array(
-                'bold'  => true,
-                'color' => array('rgb' => 'ffffff'),
-                'size'  => 10,
-                'name'  => 'Verdana'
-            )
-        );
-
-        $rows = 2;
-        $builder = $this->db->table($table);
-        $checkIfRowExist = $builder->where($where)->get()->getResultArray();
-        $fileName = $table.'.xlsx';  
-        $spreadsheet = new Spreadsheet();
-    
-        $sheet = $spreadsheet->getActiveSheet();
-        $alphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
-        $newAlp = []; // 25
-        
-        for ($i=0; $i < count($alphabet); $i++) { 
-            if(count($newAlp) == 25 && count($fields) > 25){
-                for ($j=0; $j < 2; $j++) {
-                    for ($k=0; $k < count($alphabet); $k++) { 
-                        $newAlp[] = $alphabet[$j].$alphabet[$k];
-                    }
-                }
-            }
-            else
-                $newAlp[] = $alphabet[$i];
-        }
-
-        $cell = 'A1:'.$newAlp[count($fields)-1].'1';
-        $sheet->getStyle($cell)->applyFromArray($styleArray);
-        foreach ($fields as $key=>$field) {
-            $sheet->setCellValue($alphabet[$key].'1', $field);
-        }
-
-        foreach ($checkIfRowExist as $key=>$val){
-            foreach ($fields as $key=>$field) {
-                $sheet->setCellValue($alphabet[$key] . $rows, $val[$fields[$key]]);
-            }
-            $rows++;
-        } 
-        
-        $writer = new Xlsx($spreadsheet);
-
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment; filename='.$fileName);
-        $writer->save("php://output");
-    }
-
-
     public function generalSettings()
     {
         return $this->db->table('generalSettings')->orderBy('generalSettings.id','DESC')->get()->getResultArray();
@@ -165,6 +101,16 @@ class Admin_Model extends Model
     public function sidebarMaster()
     {
         return $this->db->table('sidebar_master')->orderBy('sidebar_master.id','DESC')->get()->getResultArray();
+    }
+
+    public function singleSidebar($where)
+    {
+        return $this->db->table('sidebar_master')->where($where)->get()->getRowArray();
+    }
+
+    public function adminSidebar()
+    {
+        return $this->db->table('sidebar_master')->where(['panel_type' => 1, 'status' => 1])->get()->getResultArray();
     }
 
     public function addsetting($data)
@@ -198,30 +144,30 @@ class Admin_Model extends Model
     }
 
 
-       //************************************************Coupons Functions*********************************************
+       //************************************************ Coupons Functions *********************************************
 
-       public function get_coupon($id)
-       {
-           $coupon = $this->db->get_where('coupons', array('id' => $id))->result_array();
-           return $coupon[0];
-       }
-   
-       public function couponList($where_array = 'FALSE')
-       {
-           if (is_array($where_array) && isset($where_array)) {
-               $this->db->where($where_array);
-           }
-           return $this->db->table('coupons')->select('*')->get()->getResultArray();
-       }
-   
-       public function delete_coupon($coupon_id)
-       {
-           $this->db->where('id', $coupon_id);
-           if ($this->db->delete('coupons'))
-               return 1;
-           else
-               return 0;
-       }
+    public function get_coupon($id)
+    {
+        $coupon = $this->db->get_where('coupons', array('id' => $id))->result_array();
+        return $coupon[0];
+    }
+
+    public function couponList($where_array = 'FALSE')
+    {
+        if (is_array($where_array) && isset($where_array)) {
+            $this->db->where($where_array);
+        }
+        return $this->db->table('coupons')->select('*')->get()->getResultArray();
+    }
+
+    public function delete_coupon($coupon_id)
+    {
+        $this->db->where('id', $coupon_id);
+        if ($this->db->delete('coupons'))
+            return 1;
+        else
+            return 0;
+    }
    
     public function check_unique_code($coupon_code)
     {
@@ -232,6 +178,77 @@ class Admin_Model extends Model
             return FALSE;
         }
     }
-   
 
+    public function createExcelWithData($data,$filename='data-sheet')
+    {
+        $styleArray = array(
+            'borders' => array(
+                'outline' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '000000'),
+                ),
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array('argb' => 'FF4F81BD')
+            ),
+            'font'  => array(
+                'bold'  => true,
+                'color' => array('rgb' => 'ffffff'),
+                'size'  => 10,
+                'name'  => 'Verdana'
+            )
+        );
+
+        $rows = 2;
+        $datetime = date('Y-m-d H:i:s');
+        $fileName = $filename.'-'.$datetime.'.xlsx';
+        $spreadsheet = new Spreadsheet();
+
+        $sheet = $spreadsheet->getActiveSheet();
+        $alphabet = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+        $newAlp = []; // 25
+        
+        foreach ($data[0] as $key => $value) {
+            $fields[] = $key;
+        }
+        
+        // pre($fields);
+        for ($i = 0; $i < count($alphabet); $i++) {
+            if (count($newAlp) == 25 && count($fields) > 25) {
+                for ($j = 0; $j < 2; $j++) {
+                    for ($k = 0; $k < count($alphabet); $k++) {
+                        $newAlp[] = $alphabet[$j] . $alphabet[$k];
+                    }
+                }
+            } else
+                $newAlp[] = $alphabet[$i];
+        }
+
+        $cell = 'A1:' . $newAlp[count($fields) - 1] . '1';
+        $sheet->getStyle($cell)->applyFromArray($styleArray);
+        foreach ($fields as $key => $field) {
+            $sheet->setCellValue($alphabet[$key] . '1', $field);
+        }
+
+        foreach (range('A', $sheet->getHighestColumn()) as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        foreach ($data as $key => $val) {
+            foreach ($fields as $key => $field) {
+                if($fields[$key] == 'Account Number' || $fields[$key] == 'Aadhar Number' || $fields[$key] == 'Transaction ID')
+                    $sheet->setCellValueExplicit($alphabet[$key] . $rows, $val[$fields[$key]], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                else
+                    $sheet->setCellValue($alphabet[$key] . $rows, $val[$fields[$key]]);
+            }
+            $rows++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename=' . $fileName);
+        $writer->save("php://output");
+    }
 }
