@@ -93,9 +93,9 @@ class Admin_Model extends Model
         }
     }
 
-    public function generalSettings()
+    public function generalSettings($where = [])
     {
-        return $this->db->table('generalSettings')->orderBy('generalSettings.id','DESC')->get()->getResultArray();
+        return $this->db->table('generalSettings')->where($where)->orderBy('generalSettings.id','DESC')->get()->getResultArray();
     }
     
     public function sidebarMaster()

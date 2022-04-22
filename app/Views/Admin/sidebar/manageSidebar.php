@@ -37,6 +37,7 @@
                                         <th>Name</th>
                                         <th>Url</th>
                                         <th>Icon</th>
+                                        <th>Panel</th>
                                         <th>Add Access</th>
                                         <th>Edit Access</th>
                                         <th>View Access</th>
@@ -61,6 +62,7 @@
                                         <td><?= $singleData['sidebar_name'] ?></td>
                                         <td><?= $singleData['sidebar_url'] ?></td>
                                         <td><?= $singleData['sidebar_icon'] ?></td>
+                                        <td><?= $singleData['panel_type'] == 1 ? 'Admin' : 'Vendor' ?></td>
                                         <td><?= $singleData['add_access'] == 1 ? '<span class="badge badge-soft-success font-size-13">Has Access</span>' : '<span class="badge badge-soft-danger font-size-13">No Access</span>' ?></td>
                                         <td><?= $singleData['edit_access'] == 1 ? '<span class="badge badge-soft-success font-size-13">Has Access</span>' : '<span class="badge badge-soft-danger font-size-13">No Access</span>' ?></td>
                                         <td><?= $singleData['view_access'] == 1 ? '<span class="badge badge-soft-success font-size-13">Has Access</span>' : '<span class="badge badge-soft-danger font-size-13">No Access</span>' ?></td>

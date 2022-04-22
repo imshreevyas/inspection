@@ -122,7 +122,7 @@ class AdminController extends BaseController
     {
         $data['pageHas'] = 'form';
         $data['pageName'] = 'Add Settings';
-        $data['allGeneralSettings'] = $this->admin_model->generalSettings($id);
+        $data['allGeneralSettings'] = $this->admin_model->generalSettings(['id' => $id]);
         return $this->loadViews('generalSettings/addGeneralSettings', $data);
     }
 
